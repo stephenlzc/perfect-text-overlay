@@ -4,6 +4,8 @@
 
 > 通过分离图像生成和文字渲染，解决 AI 生成图像中文字错乱的问题。
 
+![GenImageText Hero](https://raw.githubusercontent.com/stephenlzc/GenImageText/main/assets/hero.png)
+
 🌐 [English](README.md) | **简体中文** | [繁體中文](README.zh-TW.md) | [日本語](README.ja.md) | [한국어](README.ko.md)
 
 ---

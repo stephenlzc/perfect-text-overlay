@@ -4,6 +4,8 @@
 
 > 画像生成とテキストレンダリングを分離することで、AI生成画像の文字化け問題を解決します。
 
+![GenImageText Hero](https://raw.githubusercontent.com/stephenlzc/GenImageText/main/assets/hero.png)
+
 🌐 [English](README.md) | [简体中文](README.zh-CN.md) | [繁體中文](README.zh-TW.md) | **日本語** | [한국어](README.ko.md)
 
 ---
