@@ -19,6 +19,18 @@ AIが生成した画像には、特に中国語・日本語・韓国語（CJK）
 
 ---
 
+## AI Agent向け自然言語インストール
+
+以下のプロンプトをLLM Agent（Claude Code、Kimi Code、Cursorなど）にコピー＆ペーストしてください：
+
+```
+ワークスペースに perfect-text-overlay スキルをインストールしてください。
+クローン元：https://github.com/stephenlzc/perfect-text-overlay
+すべての依存関係を設定し、日本語テキスト抽出テストを実行してインストールを確認してください。
+```
+
+---
+
 ## インストール
 
 ### 要件

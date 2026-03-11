@@ -19,6 +19,18 @@ AI-generated images often contain garbled or imperfect text, especially for Chin
 
 ---
 
+## For AI Agents (Natural Language Installation)
+
+Copy and paste this prompt to your LLM agent (Claude Code, Kimi Code, Cursor, etc.):
+
+```
+Install the perfect-text-overlay skill to my workspace.
+Clone from: https://github.com/stephenlzc/perfect-text-overlay
+Set up all dependencies and verify the installation by running a test with Chinese text extraction.
+```
+
+---
+
 ## Installation
 
 ### Requirements
