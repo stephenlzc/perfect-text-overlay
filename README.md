@@ -133,4 +133,9 @@ MIT © [stephenlzc](https://github.com/stephenlzc)
 
 ---
 
-**Read in other languages:** [简体中文](README.zh-CN.md) | [繁體中文](README.zh-TW.md) | [日本語](README.ja.md) | [한국어](README.ko.md)
+## 🌍 Languages
+
+- [简体中文](README.zh-CN.md) - 简体中文文档
+- [繁體中文](README.zh-TW.md) - 繁體中文文檔  
+- [日本語](README.ja.md) - 日本語ドキュメント
+- [한국어](README.ko.md) - 한국어 문서
