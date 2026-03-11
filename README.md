@@ -67,13 +67,28 @@ Step 5: Text Overlay
 
 ## Installation
 
+### Via NPM (Recommended)
+
+```bash
+# Install the package globally
+npm install -g perfect-text-overlay
+
+# Or install locally in your project
+npm install perfect-text-overlay
+```
+
+### Via Git Clone
+
 ```bash
 # Clone the repository
 git clone https://github.com/stephenlzc/perfect-text-overlay
 cd perfect-text-overlay
 
 # Install dependencies
-pip install Pillow numpy
+npm install
+
+# Python dependencies will be installed automatically
+# Or manually: pip install Pillow numpy
 
 # Optional: Install additional system fonts
 # macOS: Fonts are automatically detected
@@ -82,6 +97,59 @@ pip install Pillow numpy
 ```
 
 ## Usage
+
+### CLI Usage
+
+After installing globally, use the `pto` or `perfect-text-overlay` command:
+
+```bash
+# Check installation and dependencies
+pto check
+
+# Separate a prompt into image prompt and text requirements
+pto separate "Generate a poster with title 'Summer Sale'"
+
+# Analyze an image for text placement
+pto analyze ./image.png --text "Sample Text"
+
+# Render text on an image
+pto render ./input.png ./output.png --text "Hello World" --font modern --effects shadow,outline
+
+# Complete workflow
+pto workflow "Create a movie poster with 'Interstellar' title" ./base.png ./final.png
+
+# Get help
+pto --help
+```
+
+### Node.js API Usage
+
+```javascript
+const { separatePrompt, analyzeImage, renderTextOnImage } = require('perfect-text-overlay');
+
+async function createPoster() {
+  // Step 1: Separate prompt
+  const result = await separatePrompt('Generate a poster with title "Summer Sale"');
+  console.log('Image prompt:', result.image_prompt);
+  console.log('Text requirements:', result.text_requirements);
+
+  // Step 2: Analyze image (after generating with your preferred AI)
+  const analysis = await analyzeImage('./generated.png', result.text_requirements);
+  
+  // Step 3: Get placement suggestions
+  const { getTextPlacementSuggestions } = require('perfect-text-overlay');
+  const placements = getTextPlacementSuggestions(analysis, result.text_requirements);
+  
+  // Step 4: Render text
+  await renderTextOnImage('./generated.png', './final.png', placements, {
+    font_style: 'modern',
+    effects: ['shadow', 'outline'],
+    text_color: [255, 215, 0] // Gold color
+  });
+}
+
+createPoster();
+```
 
 ### Basic Example
 

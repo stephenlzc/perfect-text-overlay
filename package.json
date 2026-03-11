@@ -1,0 +1,56 @@
+{
+  "name": "perfect-text-overlay",
+  "version": "1.0.0",
+  "description": "Fix imperfect AI-generated text in images by separating image generation and text overlay",
+  "main": "lib/index.js",
+  "types": "types/index.d.ts",
+  "bin": {
+    "pto": "bin/cli.js",
+    "perfect-text-overlay": "bin/cli.js"
+  },
+  "scripts": {
+    "build": "node scripts/build.js",
+    "test": "node --test test/index.test.js",
+    "preinstall": "node scripts/install.js",
+    "postinstall": "node scripts/install.js"
+  },
+  "keywords": [
+    "ai",
+    "image",
+    "text",
+    "overlay",
+    "poster",
+    "flowchart",
+    "chinese",
+    "cjk",
+    "typography",
+    "image-generation",
+    "cli"
+  ],
+  "author": "stephenlzc",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/stephenlzc/perfect-text-overlay.git"
+  },
+  "bugs": {
+    "url": "https://github.com/stephenlzc/perfect-text-overlay/issues"
+  },
+  "homepage": "https://github.com/stephenlzc/perfect-text-overlay#readme",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "commander": "^11.0.0",
+    "chalk": "^4.1.2"
+  },
+  "devDependencies": {},
+  "files": [
+    "lib/",
+    "bin/",
+    "scripts/",
+    "assets/",
+    "README.md",
+    "LICENSE"
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "name": "@types/perfect-text-overlay",
+  "version": "1.0.0",
+  "description": "TypeScript type definitions for perfect-text-overlay - Fix imperfect AI-generated text in images",
+  "main": "",
+  "types": "index.d.ts",
+  "scripts": {
+    "test": "tsc --noEmit index.d.ts"
+  },
+  "keywords": [
+    "typescript",
+    "types",
+    "perfect-text-overlay",
+    "text-overlay",
+    "image-generation",
+    "ai-image",
+    "poster",
+    "flowchart",
+    "typography"
+  ],
+  "author": "perfect-text-overlay",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-org/perfect-text-overlay.git"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "peerDependencies": {
+    "perfect-text-overlay": ">=1.0.0"
+  }
+}
