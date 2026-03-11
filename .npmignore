@@ -52,8 +52,16 @@ __pycache__/
 *.pyd
 .Python
 
-# Don't ignore these (will be included)
-!lib/
-!bin/
-!scripts/
-!assets/
+# Examples (too large)
+examples/
+
+# Font download cache (fonts are downloaded on install)
+assets/fonts/*.otf
+assets/fonts/*.ttf
+!assets/fonts/LICENSE.md
+
+# References
+references/
+
+# Outputs
+outputs/

@@ -241,6 +241,37 @@ program
     console.log(chalk.cyan('Package version:'), pkg.version);
   });
 
+// Command: download-fonts
+program
+  .command('download-fonts')
+  .description('Download font files for better text rendering')
+  .option('--all', 'Download all fonts')
+  .option('--list', 'List available fonts')
+  .argument('[fonts...]', 'Specific fonts to download')
+  .action(async (fonts, options) => {
+    const { downloadFonts, FONTS } = require('../scripts/download-fonts');
+    
+    if (options.list) {
+      console.log(chalk.blue('📋 Available fonts:\n'));
+      for (const [name, info] of Object.entries(FONTS)) {
+        console.log(`  ${chalk.cyan(name)}`);
+        console.log(`      ${info.description}\n`);
+      }
+      console.log(chalk.gray('Usage: pto download-fonts --all'));
+      console.log(chalk.gray('       pto download-fonts NotoSansCJKsc-Bold.otf'));
+      return;
+    }
+    
+    if (options.all) {
+      await downloadFonts();
+    } else if (fonts.length > 0) {
+      await downloadFonts(fonts);
+    } else {
+      // Download minimal set
+      await downloadFonts(['NotoSansCJKsc-Bold.otf', 'Roboto-Bold.ttf']);
+    }
+  });
+
 // Parse arguments
 program.parse();
 

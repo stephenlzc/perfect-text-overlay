@@ -1,6 +1,7 @@
 # Perfect Text Overlay
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![npm version](https://badge.fury.io/js/perfect-text-overlay.svg)](https://www.npmjs.com/package/perfect-text-overlay)
 
 > Fix imperfect AI-generated text in images by separating image generation and text overlay.
 
@@ -8,346 +9,128 @@
 
 ---
 
-## Overview
+## Quick Start
 
-AI-generated images often contain garbled or imperfect text, especially for Chinese, Japanese, Korean (CJK) and other non-Latin scripts. This skill solves this problem by separating image generation and text rendering into two distinct steps:
+```bash
+# Install
+npm install -g perfect-text-overlay
 
-1. **Generate a clean base image** without text
-2. **Analyze optimal text placement zones**
-3. **Render text** with professional typography and effects
+# Check environment
+pto check
 
-## Features
+# Download fonts (optional)
+pto download-fonts --all
 
-- 🎯 **Multi-language Support**: Chinese (Simplified/Traditional), Japanese, Korean, English
-- 🖼️ **Multiple Image Types**: Posters, flowcharts, infographics, social media graphics
-- ✨ **Professional Typography**: Shadows, outlines, background boxes
-- 🔤 **Free Commercial Fonts**: Includes 6 open-source fonts (SIL OFL / Apache 2.0)
-- 🎨 **Smart Layout Analysis**: Automatic safe zone detection for text placement
-
-## For AI Agents (Natural Language Installation)
-
-Copy and paste this prompt to your LLM agent (Claude Code, Kimi Code, Cursor, etc.):
-
-```
-Install the perfect-text-overlay skill to my workspace. 
-Clone from: https://github.com/stephenlzc/perfect-text-overlay
-Set up all dependencies and verify the installation by running a test with Chinese text extraction.
+# Use it
+pto separate "Generate a poster with 'Summer Sale' title"
 ```
 
-## Workflow
+## What It Does
 
-```
-Step 1: Prompt Separation
-├─ Extract text requirements from user prompt
-├─ Generate image-only prompt (no text descriptions)
-└─ Output: Image Prompt + Text Requirements
+AI-generated images often have garbled text, especially for Chinese/Japanese/Korean. This tool fixes that by:
 
-Step 2: Image Generation
-├─ Generate base image using image-only prompt
-└─ Output: Clean image without text
-
-Step 3: Image Analysis
-├─ Analyze image for safe text placement zones
-├─ Detect layout structure (for flowcharts)
-└─ Output: Layout suggestions with coordinates
-
-Step 4: User Customization
-├─ Ask user 5 questions for customization
-│  1. Scene Type (poster/flowchart/infographic)
-│  2. Text Content Confirmation
-│  3. Font Style Selection
-│  4. Text Position Preference
-│  5. Effects and Style Options
-└─ Output: User Choices
-
-Step 5: Text Overlay
-├─ Render text with professional typography
-└─ Output: Final image with perfect text
-```
+1. **Separate** prompt → image-only prompt + text requirements
+2. **Generate** clean base image (use your AI of choice)
+3. **Analyze** image for best text placement
+4. **Render** perfect text with professional typography
 
 ## Installation
 
-### Via NPM (Recommended)
+### Requirements
+- Node.js 18+
+- Python 3.8+
+- Python packages: `pip install Pillow numpy`
 
+### NPM
 ```bash
-# Install the package globally
 npm install -g perfect-text-overlay
-
-# Or install locally in your project
-npm install perfect-text-overlay
 ```
 
-### Via Git Clone
-
+### Git Clone
 ```bash
-# Clone the repository
 git clone https://github.com/stephenlzc/perfect-text-overlay
 cd perfect-text-overlay
-
-# Install dependencies
 npm install
-
-# Python dependencies will be installed automatically
-# Or manually: pip install Pillow numpy
-
-# Optional: Install additional system fonts
-# macOS: Fonts are automatically detected
-# Linux: sudo apt-get install fonts-noto-cjk
-# Windows: Fonts are automatically detected
 ```
 
-## Usage
-
-### CLI Usage
-
-After installing globally, use the `pto` or `perfect-text-overlay` command:
+## CLI Usage
 
 ```bash
-# Check installation and dependencies
-pto check
+# Separate prompt
+pto separate -p "Movie poster with 'Interstellar' title"
 
-# Separate a prompt into image prompt and text requirements
-pto separate "Generate a poster with title 'Summer Sale'"
+# Analyze image
+pto analyze -i base.png -r '{"text_groups":[{"content":"Hello"}]}'
 
-# Analyze an image for text placement
-pto analyze ./image.png --text "Sample Text"
-
-# Render text on an image
-pto render ./input.png ./output.png --text "Hello World" --font modern --effects shadow,outline
+# Render text
+pto render -i base.png -o final.png -p placements.json
 
 # Complete workflow
-pto workflow "Create a movie poster with 'Interstellar' title" ./base.png ./final.png
+pto workflow -p "Poster with 'Sale' title" -i base.png -o final.png
 
-# Get help
-pto --help
+# Download fonts
+pto download-fonts --list
+pto download-fonts --all
 ```
 
-### Node.js API Usage
+## Node.js API
 
 ```javascript
 const { separatePrompt, analyzeImage, renderTextOnImage } = require('perfect-text-overlay');
 
 async function createPoster() {
-  // Step 1: Separate prompt
-  const result = await separatePrompt('Generate a poster with title "Summer Sale"');
-  console.log('Image prompt:', result.image_prompt);
-  console.log('Text requirements:', result.text_requirements);
-
-  // Step 2: Analyze image (after generating with your preferred AI)
-  const analysis = await analyzeImage('./generated.png', result.text_requirements);
+  // 1. Separate
+  const result = await separatePrompt('Poster with "Hello" title');
   
-  // Step 3: Get placement suggestions
-  const { getTextPlacementSuggestions } = require('perfect-text-overlay');
-  const placements = getTextPlacementSuggestions(analysis, result.text_requirements);
+  // 2. Analyze (after generating image with result.image_prompt)
+  const analysis = await analyzeImage('base.png', result.text_requirements);
   
-  // Step 4: Render text
-  await renderTextOnImage('./generated.png', './final.png', placements, {
-    font_style: 'modern',
-    effects: ['shadow', 'outline'],
-    text_color: [255, 215, 0] // Gold color
-  });
+  // 3. Render
+  await renderTextOnImage('base.png', 'final.png', 
+    analysis.placements, 
+    { font_style: 'modern', effects: ['shadow'] }
+  );
 }
-
-createPoster();
 ```
 
-### Basic Example
+## Font Styles
 
-```python
-from scripts.prompt_separator import separate_prompt
-from scripts.image_analyzer import analyze_image, get_text_placement_suggestions
-from scripts.text_renderer import render_text_on_image
+| Style | Language | Description |
+|-------|----------|-------------|
+| `modern` | Chinese | Clean, professional |
+| `traditional` | Chinese | Serif, elegant |
+| `traditional_tw` | Chinese (TW) | Traditional Chinese |
+| `korean` | Korean | Korean optimized |
+| `english` | English/Latin | Roboto font |
+| `calligraphy` | Any | Artistic style |
+| `cartoon` | Any | Fun, playful |
 
-# Step 1: Separate prompt
-user_input = "生成一张春节促销海报，标题写'新春大促，全场5折起'，要有红色的喜庆氛围"
-result = separate_prompt(user_input)
-
-# result['image_prompt']: "A festive Chinese New Year promotional poster..."
-# result['text_requirements']: {"text_groups": [{"content": "新春大促，全场5折起"}]}
-
-# Step 2: Generate base image (using your preferred image generator)
-# ... generate image using result['image_prompt'] ...
-
-# Step 3: Analyze image
-text_requirements = result['text_requirements']
-analysis = analyze_image("generated_image.png", text_requirements)
-placements = get_text_placement_suggestions(analysis, text_requirements)
-
-# Step 4: User choices (normally collected via UI)
-user_choices = {
-    "font_style": "modern",
-    "text_size": "auto",
-    "effects": ["shadow", "outline"],
-    "text_color": (255, 215, 0),  # Gold
-}
-
-# Step 5: Render text
-output_path = render_text_on_image(
-    image_path="generated_image.png",
-    output_path="final_image.png",
-    placements=placements,
-    user_choices=user_choices
-)
-```
-
-### Font Styles
-
-The following font styles are supported:
-
-| Style | Font | Language | License |
-|-------|------|----------|---------|
-| `modern` | Noto Sans CJK SC Bold | Simplified Chinese | SIL OFL 1.1 |
-| `traditional` | Noto Serif CJK SC Bold | Simplified Chinese | SIL OFL 1.1 |
-| `traditional_tw` | Noto Sans CJK TC Bold | Traditional Chinese (Taiwan) | SIL OFL 1.1 |
-| `korean` | Noto Sans CJK KR Bold | Korean | SIL OFL 1.1 |
-| `english` | Roboto Bold | English/Latin | Apache 2.0 |
-| `cartoon` | Noto Sans CJK SC Bold | Universal | SIL OFL 1.1 |
-| `calligraphy` | System fonts | System dependent | Varies |
+Download fonts: `pto download-fonts --all`
 
 ## Project Structure
 
 ```
 perfect-text-overlay/
-├── assets/
-│   └── fonts/              # Free commercial fonts
-│       ├── NotoSansCJKsc-Bold.otf
-│       ├── NotoSerifCJKsc-Bold.otf
-│       ├── NotoSansCJKtc-Bold.otf
-│       ├── NotoSansCJKkr-Bold.otf
-│       ├── Roboto-Bold.ttf
-│       ├── OpenSans-Bold.ttf
-│       └── LICENSE.md
-├── references/
-│   ├── trigger_keywords.md    # Multi-language trigger keywords
-│   ├── layout_patterns.md     # Typography best practices
-│   └── flowchart_symbols.md   # Flowchart design standards
-├── scripts/
-│   ├── prompt_separator.py    # Extract text from prompts
-│   ├── image_analyzer.py      # Analyze image layouts
-│   └── text_renderer.py       # Render text on images
-├── SKILL.md                   # Detailed skill documentation
-└── README.md                  # This file
+├── bin/cli.js              # CLI entry
+├── lib/index.js            # Node.js API
+├── scripts/                # Python scripts
+│   ├── prompt_separator.py
+│   ├── image_analyzer.py
+│   └── text_renderer.py
+├── assets/fonts/           # Fonts (downloaded on demand)
+└── types/                  # TypeScript definitions
 ```
 
-## Supported Use Cases
+## Documentation
 
-### 1. Poster with Title
-```
-User: "Generate a sci-fi movie poster with title 'Interstellar'"
-↓
-Step 1: Image prompt = "sci-fi movie poster, space theme..."
-        Text = "Interstellar"
-↓
-Step 2: Generate base image
-↓
-Step 3: Suggest bottom center placement
-↓
-Step 4: Modern font, bottom center, shadow+outline
-↓
-Step 5: Render large title at bottom
-```
-
-### 2. Flowchart
-```
-User: "Create user registration flowchart: 1. Fill info 2. Verify email 3. Complete"
-↓
-Step 1: Detect flowchart nodes
-↓
-Step 2: Generate base image
-↓
-Step 3: Detect 3 node positions
-↓
-Step 4: Horizontal flow, add boxes+arrows
-↓
-Step 5: Render 3 boxed nodes with connecting arrows
-```
-
-### 3. Infographic
-```
-User: "Create infographic with 'Sales: $100K' and 'Growth: +50%'"
-↓
-Step 1: Extract data points
-↓
-Step 2: Generate base image
-↓
-Step 3: Find safe zones for each statistic
-↓
-Step 4: Large numbers, contrasting colors
-↓
-Step 5: Render professional data visualization
-```
-
-## API Reference
-
-### Prompt Separator
-
-```python
-from scripts.prompt_separator import separate_prompt
-
-result = separate_prompt("Create poster with title 'Hello World'")
-# Returns: {
-#     "has_text": True,
-#     "image_prompt": "Create poster...",
-#     "text_requirements": {...}
-# }
-```
-
-### Image Analyzer
-
-```python
-from scripts.image_analyzer import analyze_image, get_text_placement_suggestions
-
-analysis = analyze_image("image.png", text_requirements)
-placements = get_text_placement_suggestions(analysis, text_requirements)
-```
-
-### Text Renderer
-
-```python
-from scripts.text_renderer import render_text_on_image
-
-render_text_on_image(
-    image_path="input.png",
-    output_path="output.png",
-    placements=[...],
-    user_choices={...}
-)
-```
-
-## Trigger Keywords
-
-This skill triggers when user input contains:
-
-- **Image type keywords**: poster, flowchart, infographic, banner, etc.
-- **Text requirement keywords**: write, title, text, caption, etc.
-
-See [references/trigger_keywords.md](references/trigger_keywords.md) for complete multi-language keyword lists.
-
-## Font Licenses
-
-All included fonts are free for commercial use:
-
-- **Noto Sans/Serif CJK**: SIL Open Font License 1.1
-- **Roboto**: Apache License 2.0
-- **Open Sans**: SIL Open Font License 1.1
-
-See [assets/fonts/LICENSE.md](assets/fonts/LICENSE.md) for full license details.
-
-## Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
+- [API Reference](API.md) - Detailed API documentation
+- [Contributing](CONTRIBUTING.md) - Contribution guidelines
+- [CHANGELOG](CHANGELOG.md) - Version history
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Acknowledgments
-
-- [Noto Fonts](https://github.com/notofonts/noto-cjk) by Google & Adobe
-- [Roboto](https://github.com/googlefonts/roboto) by Google
-- [Open Sans](https://github.com/googlefonts/opensans) by Google
+MIT © [stephenlzc](https://github.com/stephenlzc)
 
 ---
 
-**Read this in other languages:**
-[简体中文](README.zh-CN.md) | [繁體中文](README.zh-TW.md) | [日本語](README.ja.md) | [한국어](README.ko.md)
+**Read in other languages:** [简体中文](README.zh-CN.md) | [繁體中文](README.zh-TW.md) | [日本語](README.ja.md) | [한국어](README.ko.md)

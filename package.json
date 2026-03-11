@@ -11,8 +11,8 @@
   "scripts": {
     "build": "node scripts/build.js",
     "test": "node --test test/index.test.js",
-    "preinstall": "node scripts/install.js",
-    "postinstall": "node scripts/install.js"
+    "postinstall": "node scripts/postinstall.js",
+    "download-fonts": "node scripts/download-fonts.js"
   },
   "keywords": [
     "ai",
@@ -44,12 +44,12 @@
     "commander": "^11.0.0",
     "chalk": "^4.1.2"
   },
-  "devDependencies": {},
   "files": [
     "lib/",
     "bin/",
-    "scripts/",
-    "assets/",
+    "scripts/*.js",
+    "scripts/*.py",
+    "assets/fonts/LICENSE.md",
     "README.md",
     "LICENSE"
   ]
