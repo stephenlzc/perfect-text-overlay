@@ -4,6 +4,10 @@
 
 > Fix imperfect AI-generated text in images by separating image generation and text overlay.
 
+🌐 **English** | [简体中文](README.zh-CN.md) | [繁體中文](README.zh-TW.md) | [日本語](README.ja.md) | [한국어](README.ko.md)
+
+---
+
 ## Overview
 
 AI-generated images often contain garbled or imperfect text, especially for Chinese, Japanese, Korean (CJK) and other non-Latin scripts. This skill solves this problem by separating image generation and text rendering into two distinct steps:
