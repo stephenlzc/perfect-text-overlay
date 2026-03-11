@@ -10,6 +10,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [3.0.0] - 2025-03-12
+
+### BREAKING CHANGES
+- **Project renamed**: `perfect-text-overlay` → `GenImageText`
+  - Repository URL changed: `github.com/stephenlzc/perfect-text-overlay` → `github.com/stephenlzc/GenImageText`
+  - Old URL will redirect to new URL
+
+### Added
+- **Hero Banner**: Added professional hero image to all README files
+  - Visual showcase of the tool's functionality
+  - Before/After comparison display
+  - Multi-language support indicator
+- **New Brand Identity**: Modern, tech-focused branding
+
+### Changed
+- **All Documentation Updated**: Project name updated in all files
+  - README.md (English)
+  - README.zh-CN.md (简体中文)
+  - README.zh-TW.md (繁體中文)
+  - README.ja.md (日本語)
+  - README.ko.md (한국어)
+  - SKILL.md
+  - CHANGELOG.md
+
+---
+
 ## [2.0.0] - 2025-03-12
 
 ### BREAKING CHANGES
