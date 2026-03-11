@@ -1,18 +1,23 @@
 ---
 name: GenImageText
-description: Fix imperfect AI-generated text in images by separating image generation and text overlay. Use when user wants to create images with Chinese or English text, especially for posters, social media graphics, flowcharts, diagrams, or any image requiring precise text placement. Triggers on keywords like "生成海报", "create poster", "流程图", "flowchart", "带文字的图片", "image with text", and when text content is specified.
+description: Add perfect text to AI-generated images. NOT an image generator - this skill overlays text on images created by user's AI tools (Midjourney, DALL-E, Stable Diffusion, etc.). Solves garbled text in AI-generated images by separating image generation and text rendering. Triggers on keywords like "生成海报", "create poster", "流程图", "flowchart", "带文字的图片", "image with text".
 ---
 
 # GenImageText
 
-This skill solves the common problem of AI-generated images having imperfect or garbled text (especially Chinese characters) by separating the image generation and text overlay into two distinct steps.
+> ⚠️ **IMPORTANT**: This skill is NOT an image generator. It adds text to images created by your AI image tools.
+
+This skill solves the common problem of AI-generated images having imperfect or garbled text (especially Chinese characters). It separates the workflow into two parts:
+1. **User generates image** using their preferred AI tool (Midjourney, DALL-E, Stable Diffusion, etc.)
+2. **This skill adds text** to the generated image with perfect typography
 
 ## When to Use This Skill
 
-Trigger this skill when:
-1. User requests an image with specific text content
-2. Keywords match: poster creation, flowcharts, diagrams, social media graphics
-3. User mentions text to be included: "写'xxx'", "标题是", "with 'xxx' text", "saying 'xxx'"
+Use this skill when:
+1. User wants to add text to an AI-generated image
+2. AI-generated image has garbled text that needs to be fixed
+3. Keywords match: poster with text, flowcharts, diagrams, social media graphics with captions
+4. User mentions text to be included: "写'xxx'", "标题是", "with 'xxx' text", "saying 'xxx'"
 
 ## Workflow Overview
 
@@ -22,20 +27,24 @@ Step 1: Prompt Separation
         ├─ Generate image-only prompt (no text descriptions)
         └─ Output: Image Prompt + Text Requirements
 
-Step 2: Image Generation
-        ├─ Generate base image using image-only prompt
+Step 2: Image Generation ⭐ USER'S AI TOOL
+        ├─ User generates base image using their preferred AI
+        │  (Midjourney, DALL-E, Stable Diffusion, etc.)
+        ├─ Use the "image-only prompt" from Step 1
         └─ Output: Clean image without text
 
 Step 3: Image Analysis
-        ├─ Analyze image for safe text placement zones
+        ├─ Analyze the AI-generated image for safe text placement zones
         ├─ Detect layout structure (for flowcharts)
         └─ Output: Layout suggestions with coordinates
 
-Step 4: Text Overlay
+Step 4: Text Overlay ⭐ THIS SKILL
         ├─ Ask user 5 questions for customization
-        ├─ Render text with professional typography
-        └─ Output: Final image with perfect text
+        ├─ Render perfect text on the AI-generated image
+        └─ Output: Final image with perfect text overlay
 ```
+
+**Key Point**: Steps 1, 3, 4 use this skill. Step 2 uses user's own AI image generator.
 
 ## Installation
 
@@ -67,14 +76,21 @@ result = separate_prompt(user_input)
 - `image_prompt`: Clean visual description without text
 - `text_requirements`: Structured text data with content and position hints
 
-## Step 2: Generate Base Image
+## Step 2: Generate Base Image (User's AI Tool)
 
-Generate image using the image-only prompt. User can use:
-- External AI image generators (DALL-E, Midjourney, Stable Diffusion)
-- Local generation tools
-- Provide their own image
+> ⚠️ **This step uses USER'S own AI image generator, NOT this skill.**
 
-Save the generated image and proceed to Step 3.
+Use the `image_prompt` from Step 1 to generate the base image using:
+- **Midjourney** - Discord-based AI image generation
+- **DALL-E 3** (ChatGPT Plus) - OpenAI's image generator
+- **Stable Diffusion** - Local or web-based generation
+- **Adobe Firefly** - Adobe's AI image tool
+- **Other AI image generators** - Any tool the user prefers
+
+**Important:**
+- The image should contain NO text (use the cleaned prompt from Step 1)
+- Save the generated image to `outputs/YYYYMMDD/` folder
+- Proceed to Step 3 with the generated image
 
 ## Step 3: Analyze Image Layout
 
@@ -187,9 +203,11 @@ Before rendering, ask user 5 questions to customize the output:
 >
 > **额外要求：**（如"金色渐变文字"、"品牌色#FF5733"）
 
-## Step 5: Render Text Overlay
+## Step 5: Render Text Overlay (This Skill)
 
-Use `scripts/text_renderer.py` to add text to image.
+> ✅ **This step uses this skill to add perfect text to the AI-generated image.**
+
+Use `scripts/text_renderer.py` to overlay text on the image generated in Step 2.
 
 ### Output File Organization
 
@@ -244,36 +262,44 @@ output_path = render_text_on_image(
 ## Common Scenarios
 
 ### Scenario 1: Poster with Title
+
+**User Request:** "生成一张电影海报，标题写'星际穿越'，科幻风格"
+
+**Workflow:**
 ```
-User: "生成一张电影海报，标题写'星际穿越'，科幻风格"
-↓
-Step 1: Image prompt = "sci-fi movie poster, space theme, futuristic, cinematic, high quality"
-        Text = "星际穿越", position = auto
-↓
-Step 2: Generate base image
-↓
-Step 3: Analyze → suggest bottom center placement
-↓
-Step 4: User choices → modern font, bottom center, shadow+outline
-↓
-Step 5: Render with large title text at bottom
+Step 1 (This Skill): 
+  ├─ Image prompt: "sci-fi movie poster, space theme..." (no text)
+  └─ Text: "星际穿越"
+
+Step 2 (User's AI Tool - Midjourney/DALL-E):
+  └─ Generate base image using the prompt from Step 1
+
+Step 3-5 (This Skill):
+  ├─ Analyze the AI-generated image
+  ├─ Detect best placement for title
+  └─ Render "星际穿越" with perfect typography
 ```
 
 ### Scenario 2: Flowchart
+
+**User Request:** "创建一个用户注册流程图：1.填写信息 2.验证邮箱 3.完成"
+
+**Workflow:**
 ```
-User: "创建一个用户注册流程图：1.填写信息 2.验证邮箱 3.完成"
-↓
-Step 1: Image prompt = "clean workflow diagram, professional blue scheme, minimalist"
-        Text groups = 3 nodes with sequential positions
-↓
-Step 2: Generate base image
-↓
-Step 3: Detect 3 node positions, suggest horizontal flow
-↓
-Step 4: User choices → modern font, horizontal flow, add boxes+arrows
-↓
-Step 5: Render 3 boxed nodes with connecting arrows
+Step 1 (This Skill):
+  ├─ Image prompt: "clean workflow diagram, professional blue..."
+  └─ Text: ["填写信息", "验证邮箱", "完成"]
+
+Step 2 (User's AI Tool):
+  └─ Generate diagram image using the prompt
+
+Step 3-5 (This Skill):
+  ├─ Detect 3 node positions in the AI-generated image
+  ├─ Suggest horizontal flow layout
+  └─ Render 3 boxed nodes with connecting arrows and text
 ```
+
+**Remember:** This skill only handles Steps 1, 3, 4, 5. Step 2 is done by user's AI image generator.
 
 ## Font Handling
 
