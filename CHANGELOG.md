@@ -1,5 +1,8 @@
 # Changelog
 
+> **Note:** This project has been renamed from `perfect-text-overlay` to `GenImageText`.
+> The GitHub repository URL remains unchanged: `https://github.com/stephenlzc/perfect-text-overlay`
+
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),

@@ -1,8 +1,10 @@
-# Perfect Text Overlay
+# GenImageText
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 > Fix imperfect AI-generated text in images by separating image generation and text overlay.
+
+![GenImageText Hero](assets/hero.png)
 
 🌐 **English** | [简体中文](README.zh-CN.md) | [繁體中文](README.zh-TW.md) | [日本語](README.ja.md) | [한국어](README.ko.md)
 
@@ -24,8 +26,8 @@ AI-generated images often contain garbled or imperfect text, especially for Chin
 Copy and paste this prompt to your LLM agent (Claude Code, Kimi Code, Cursor, etc.):
 
 ```
-Install the perfect-text-overlay skill to my workspace.
-Clone from: https://github.com/stephenlzc/perfect-text-overlay
+Install the GenImageText skill to my workspace.
+Clone from: https://github.com/stephenlzc/GenImageText
 Set up all dependencies and verify the installation by running a test with Chinese text extraction.
 ```
 
@@ -40,8 +42,8 @@ Set up all dependencies and verify the installation by running a test with Chine
 ### Git Clone
 
 ```bash
-git clone https://github.com/stephenlzc/perfect-text-overlay
-cd perfect-text-overlay
+git clone https://github.com/stephenlzc/GenImageText
+cd GenImageText
 ```
 
 ---
@@ -137,7 +139,7 @@ All fonts are free for commercial use under SIL Open Font License or Apache Lice
 ## Project Structure
 
 ```
-perfect-text-overlay/
+GenImageText/
 ├── scripts/                # Python scripts
 │   ├── prompt_separator.py
 │   ├── image_analyzer.py

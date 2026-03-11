@@ -1,9 +1,9 @@
 ---
-name: perfect-text-overlay
+name: GenImageText
 description: Fix imperfect AI-generated text in images by separating image generation and text overlay. Use when user wants to create images with Chinese or English text, especially for posters, social media graphics, flowcharts, diagrams, or any image requiring precise text placement. Triggers on keywords like "生成海报", "create poster", "流程图", "flowchart", "带文字的图片", "image with text", and when text content is specified.
 ---
 
-# Perfect Text Overlay
+# GenImageText
 
 This skill solves the common problem of AI-generated images having imperfect or garbled text (especially Chinese characters) by separating the image generation and text overlay into two distinct steps.
 
@@ -40,8 +40,8 @@ Step 4: Text Overlay
 ## Installation
 
 ```bash
-git clone https://github.com/stephenlzc/perfect-text-overlay
-cd perfect-text-overlay
+git clone https://github.com/stephenlzc/GenImageText
+cd GenImageText
 pip install Pillow numpy
 ```
 
