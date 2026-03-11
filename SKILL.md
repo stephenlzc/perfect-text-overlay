@@ -119,12 +119,40 @@ Before rendering, ask user 5 questions to customize the output:
 > - [ ] 修改第___号：（新内容）
 
 ### Question 3: Font Style
+
+**根据用户语言自动推荐合适的字体：**
+
+#### For 简体中文用户：
 > **"请选择字体风格："**
-> - [ ] 现代简约（推荐：科技/商务）
-> - [ ] 传统书法（推荐：中式/文化）
-> - [ ] 可爱卡通（推荐：儿童/趣味）
-> - [ ] 艺术手写（推荐：个人/温馨）
-> - [ ] 其他：（如"粗体黑体"、"细体宋体"、品牌字体路径）
+> - [ ] **现代简约**（思源黑体 - 适合：海报标题、科技风格、商务场景）⭐推荐
+> - [ ] **传统书法**（思源宋体 - 适合：文化主题、书籍封面、正式文档）
+> - [ ] **可爱卡通**（适合：儿童、趣味、轻松场景）
+> - [ ] **艺术手写**（适合：个人、温馨、创意场景）
+> - [ ] **其他**：（自定义字体路径）
+
+#### For 繁體中文用户：
+> **"請選擇字體風格："**
+> - [ ] **現代簡約**（思源黑體繁體 - 適合：海報標題、商務文件）⭐推薦
+> - [ ] **傳統書法**（適合：文化主題、正式場合）
+> - [ ] **可愛卡通**（適合：兒童、趣味場景）
+> - [ ] **藝術手寫**（適合：個人、溫馨場景）
+> - [ ] **其他**：（自定義字體路徑）
+
+#### For Korean users:
+> **"폰트 스타일을 선택하세요:"**
+> - [ ] **모던/현대적** (본고딕 - 한국어 최적화, 비즈니스/현대 디자인) ⭐추천
+> - [ ] **전통적** (전통 주제, 공식 문서)
+> - [ ] **귀여운/카툰** (어린이, 재미있는 스타일)
+> - [ ] **아티스틱** (개인적, 창의적 작품)
+> - [ ] **기타**: (커스텀 폰트 경로)
+
+#### For English users:
+> **"Please select font style:"**
+> - [ ] **Modern/Minimalist** (Roboto - clean, tech, business) ⭐Recommended
+> - [ ] **Traditional/Elegant** (Open Sans - formal, readable)
+> - [ ] **Playful/Cartoon** (fun, children-friendly)
+> - [ ] **Artistic/Handwritten** (personal, creative)
+> - [ ] **Other**: (custom font path)
 
 ### Question 4: Text Position
 > **"请选择文字位置："**
@@ -224,30 +252,113 @@ The skill uses `scripts/text_renderer.py` with the following priority:
 3. **System fonts**: Search common system font directories
 4. **Fallback**: Default PIL font
 
+### Font Download (For NPM Package)
+
+When using the npm package, fonts are downloaded on-demand:
+
+```bash
+# List all available fonts
+pto download-fonts --list
+
+# Download all fonts
+pto download-fonts --all
+
+# Download specific font
+pto download-fonts NotoSansCJKsc-Bold.otf
+```
+
+### Font Recommendations by Language
+
+#### 简体中文 (Simplified Chinese)
+
+| 风格 | 字体文件 | 字体名称 | 适用场景 |
+|------|---------|---------|---------|
+| **现代** ⭐ | `NotoSansCJKsc-Bold.otf` | 思源黑体 Bold | 海报标题、科技风格、商务场景 |
+| **传统** | `NotoSerifCJKsc-Bold.otf` | 思源宋体 Bold | 文化主题、书籍封面、正式文档 |
+
+**推荐映射:**
+- 现代简约 → `NotoSansCJKsc-Bold.otf`
+- 传统书法 → `NotoSerifCJKsc-Bold.otf`
+
+#### 繁體中文 (Traditional Chinese)
+
+| 风格 | 字体文件 | 字体名称 | 适用场景 |
+|------|---------|---------|---------|
+| **现代** ⭐ | `NotoSansCJKtc-Bold.otf` | 思源黑體 Bold | 台灣/香港、商務文件、現代海報 |
+
+**推荐映射:**
+- 現代簡約 → `NotoSansCJKtc-Bold.otf`
+- 傳統書法 → `NotoSerifCJKsc-Bold.otf` (_fallback_)
+
+#### 한국어 (Korean)
+
+| 스타일 | 폰트 파일 | 폰트 이름 | 용도 |
+|--------|----------|----------|------|
+| **모던** ⭐ | `NotoSansCJKkr-Bold.otf` | 본고딕 Bold | 한국어 포스터、비즈니스、현대 디자인 |
+
+**추천 매핑:**
+- 모던/현대적 → `NotoSansCJKkr-Bold.otf`
+
+#### English / Latin
+
+| Style | Font File | Font Name | Best For |
+|-------|-----------|-----------|----------|
+| **Modern** ⭐ | `Roboto-Bold.ttf` | Roboto Bold | Tech posters, clean designs, business |
+| **Humanist** | `OpenSans-Bold.ttf` | Open Sans Bold | Web content, versatile, highly readable |
+
+**Recommendation Mapping:**
+- Modern/Minimalist → `Roboto-Bold.ttf`
+- Traditional/Elegant → `OpenSans-Bold.ttf`
+
 ### Built-in Font Support
 
 All fonts in `assets/fonts/` are **free for commercial use** under SIL Open Font License or Apache License 2.0.
 
-| 字体风格 | 字体文件 | 语言 | 授权 |
-|---------|---------|------|------|
-| **思源黑体 (现代)** | `NotoSansCJKsc-Bold.otf` | 简体中文 | SIL OFL 1.1 |
-| **思源宋体 (传统)** | `NotoSerifCJKsc-Bold.otf` | 简体中文 | SIL OFL 1.1 |
-| **思源黑体繁体** | `NotoSansCJKtc-Bold.otf` | 繁体中文(台湾) | SIL OFL 1.1 |
-| **韩文字体** | `NotoSansCJKkr-Bold.otf` | 韩文 | SIL OFL 1.1 |
-| **Roboto** | `Roboto-Bold.ttf` | 英文/拉丁 | Apache 2.0 |
-| **Open Sans** | `OpenSans-Bold.ttf` | 英文/拉丁 | SIL OFL 1.1 |
+| 字体文件 | 字体名称 | Language | License | Size |
+|---------|---------|----------|---------|------|
+| `NotoSansCJKsc-Bold.otf` | 思源黑体 Bold | 简体中文 | SIL OFL 1.1 | ~16MB |
+| `NotoSerifCJKsc-Bold.otf` | 思源宋体 Bold | 简体中文 | SIL OFL 1.1 | ~17MB |
+| `NotoSansCJKtc-Bold.otf` | 思源黑體 Bold | 繁體中文 | SIL OFL 1.1 | ~16MB |
+| `NotoSansCJKkr-Bold.otf` | 본고딕 Bold | 한국어 | SIL OFL 1.1 | ~16MB |
+| `Roboto-Bold.ttf` | Roboto Bold | English | Apache 2.0 | ~170KB |
+| `OpenSans-Bold.ttf` | Open Sans Bold | English | SIL OFL 1.1 | ~130KB |
 
 ### Font Style Selection
 
-When asking the user to choose a font style (Question 3), map their choice to the appropriate font:
+When asking the user to choose a font style (Question 3), **automatically detect the language** from their text content and recommend the appropriate font:
 
-- **现代简约** → `modern` (思源黑体简体)
-- **传统书法** → `traditional` (思源宋体简体)  
-- **台湾繁体** → `traditional_tw` (思源黑体繁体)
-- **韩文** → `korean` (Noto Sans CJK KR)
-- **英文** → `english` (Roboto / Open Sans)
-- **可爱卡通** → `cartoon`
-- **艺术手写** → `calligraphy`
+```python
+# Detect language and recommend font
+def recommend_font(text_content, user_style_choice):
+    """
+    Detect language and recommend appropriate font
+    """
+    # Check for Chinese characters
+    if any('\u4e00' <= char <= '\u9fff' for char in text_content):
+        # Simplified vs Traditional detection
+        if is_traditional_chinese(text_content):
+            return 'NotoSansCJKtc-Bold.otf'  # 繁體
+        else:
+            if user_style_choice == 'traditional':
+                return 'NotoSerifCJKsc-Bold.otf'  # 思源宋体
+            else:
+                return 'NotoSansCJKsc-Bold.otf'  # 思源黑体 (default)
+    
+    # Check for Korean
+    elif any('\uac00' <= char <= '\ud7af' for char in text_content):
+        return 'NotoSansCJKkr-Bold.otf'  # 본고딕
+    
+    # Check for Japanese
+    elif any('\u3040' <= char <= '\u309f' or '\u30a0' <= char <= '\u30ff' for char in text_content):
+        return 'NotoSansCJKsc-Bold.otf'  # Use Chinese font as fallback for Japanese
+    
+    # Default to English
+    else:
+        if user_style_choice == 'traditional':
+            return 'OpenSans-Bold.ttf'
+        else:
+            return 'Roboto-Bold.ttf'  # default
+```
 
 ## Output Quality Tips
 
