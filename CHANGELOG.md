@@ -10,6 +10,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [3.1.0] - 2026-08-04
+
+### Added
+- **E-commerce Multilingual Batch Generation System**: New SVG-style text rendering pipeline for e-commerce imagery
+  - `gen_ecommerce.py`: CLI entry point for batch generation
+  - New core modules: `scripts/batch_pipeline.py`, `scripts/config_loader.py`, `scripts/i18n_manager.py`, `scripts/layout_composer.py`, `scripts/template_engine.py`
+  - E-commerce presets: `amazon_main_image`, `shopify_banner`, `home_decor_banner`, `coffee_promo`, `social_square`, `poster_a4`, `academic_flowchart`, `medical_mechanism`
+  - `templates/hero/` template with YAML config and translations for EN / JA / KO / ZH-CN / ZH-TW
+- **Reference Docs**: `references/flowchart_symbols.md`, `references/layout_patterns.md`, `references/trigger_keywords.md`
+
+### Changed
+- **Expanded Core Scripts**: Major enhancements to `text_renderer.py` (SVG-style pipeline), `prompt_separator.py`, and `image_analyzer.py`
+- **Documentation**: All READMEs emphasize the tool is a text-overlay skill, not an image generator; SKILL.md converted to full English with supported AI image generators
+
+---
+
 ## [3.0.0] - 2025-03-12
 
 ### BREAKING CHANGES
