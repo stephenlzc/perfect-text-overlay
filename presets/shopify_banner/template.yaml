@@ -1,0 +1,92 @@
+name: "shopify_banner"
+scene_type: "banner"
+canvas_width: 2400
+canvas_height: 1200
+base_image_prompt: "wide lifestyle hero photograph for an online store homepage banner, horizontal 2400x1200 cinematic composition, soft natural lighting, clean uncluttered background, generous empty space in the top third and bottom third of the frame reserved for headline and call-to-action overlays, warm inviting summer mood, no text, no signage, no watermarks, no logos"
+safe_zones:
+  - name: "headline_zone"
+    x: 60
+    y: 10
+    width: 2280
+    height: 290
+  - name: "subheadline_zone"
+    x: 100
+    y: 900
+    width: 1300
+    height: 150
+  - name: "cta_zone"
+    x: 1620
+    y: 920
+    width: 680
+    height: 220
+text_layers:
+  - name: "headline"
+    type: "text"
+    default_font: "Roboto-Bold.ttf"
+    fallback_fonts:
+      - "OpenSans-Bold.ttf"
+      - "NotoSansCJKsc-Bold.otf"
+      - "NotoSansCJKkr-Bold.otf"
+      - "NotoSansCJKtc-Bold.otf"
+    max_width: 1500
+    max_lines: 1
+    effects:
+      - "shadow"
+      - "backdrop"
+    anchor: "top-center"
+    x: 1200
+    y: 65
+    color: "#FFFFFF"
+    backdrop_color: "#0F1A2ECC"
+    padding: 55
+    stroke_color: "#000000"
+    stroke_width: 0
+    font_size: 130
+    rtl_flip: false
+
+  - name: "subheadline"
+    type: "text"
+    default_font: "OpenSans-Bold.ttf"
+    fallback_fonts:
+      - "Roboto-Bold.ttf"
+      - "NotoSansCJKsc-Bold.otf"
+      - "NotoSansCJKkr-Bold.otf"
+      - "NotoSansCJKtc-Bold.otf"
+    max_width: 1300
+    max_lines: 1
+    effects:
+      - "shadow"
+      - "backdrop"
+    anchor: "top-left"
+    x: 140
+    y: 940
+    color: "#FFFFFF"
+    backdrop_color: "#0F1A2ECC"
+    padding: 30
+    font_size: 60
+    rtl_flip: false
+
+  - name: "cta"
+    type: "badge"
+    default_font: "Roboto-Bold.ttf"
+    fallback_fonts:
+      - "OpenSans-Bold.ttf"
+      - "NotoSansCJKsc-Bold.otf"
+      - "NotoSansCJKkr-Bold.otf"
+      - "NotoSansCJKtc-Bold.otf"
+    max_width: 540
+    max_lines: 1
+    effects:
+      - "backdrop"
+    anchor: "bottom-right"
+    x: 2300
+    y: 1100
+    color: "#1A1A1A"
+    backdrop_color: "#FFC233F2"
+    padding: 44
+    font_size: 80
+    rtl_flip: false
+
+translations_file: "translations/en.json"
+output_format: "png"
+output_quality: 95

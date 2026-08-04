@@ -1,0 +1,188 @@
+name: "medical_mechanism"
+scene_type: "medical"
+canvas_width: 1600
+canvas_height: 2000
+
+base_image_prompt: |
+  Detailed scientific textbook illustration of a mitochondrion cross-section
+  inside a cell, showing the double membrane with folded cristae, glowing
+  golden energy particles and soft light beams flowing along the inner
+  membrane suggesting electron flow, a curved pathway of four softly glowing
+  circular nodes flowing down the right side, gentle blue cytoplasm
+  background with faint surrounding organelles, clean educational
+  biochemistry diagram style, generous empty space on the left side for
+  labels and at the top for a title, no text, no letters, no numbers,
+  no labels, no watermark.
+
+safe_zones:
+  - name: "title_zone"
+    x: 100
+    y: 80
+    width: 1400
+    height: 280
+  - name: "stages_zone"
+    x: 60
+    y: 380
+    width: 720
+    height: 1440
+  - name: "caption_zone"
+    x: 100
+    y: 1830
+    width: 1400
+    height: 140
+
+text_layers:
+  - name: "title"
+    type: "text"
+    default_font: "Roboto-Bold.ttf"
+    fallback_fonts:
+      - "NotoSansCJKsc-Bold.otf"
+      - "NotoSansCJKtc-Bold.otf"
+      - "NotoSansCJKkr-Bold.otf"
+      - "NotoSansArabic-Bold.ttf"
+    max_width: 1400
+    max_lines: 2
+    effects:
+      - "shadow"
+    anchor: "top-center"
+    x: 800
+    y: 170
+    color: "#0B3C5D"
+    font_size: 84
+
+  - name: "subtitle"
+    type: "text"
+    default_font: "Roboto-Bold.ttf"
+    fallback_fonts:
+      - "NotoSansCJKsc-Bold.otf"
+      - "NotoSansCJKtc-Bold.otf"
+      - "NotoSansCJKkr-Bold.otf"
+      - "NotoSansArabic-Bold.ttf"
+    max_width: 1300
+    max_lines: 1
+    anchor: "top-center"
+    x: 800
+    y: 300
+    color: "#4A6076"
+    font_size: 42
+
+  - name: "stage1"
+    type: "badge"
+    default_font: "Roboto-Bold.ttf"
+    fallback_fonts:
+      - "NotoSansCJKsc-Bold.otf"
+      - "NotoSansCJKtc-Bold.otf"
+      - "NotoSansCJKkr-Bold.otf"
+      - "NotoSansArabic-Bold.ttf"
+    max_width: 600
+    max_lines: 1
+    effects:
+      - "backdrop"
+      - "shadow"
+    anchor: "left"
+    x: 110
+    y: 615
+    color: "#FFFFFF"
+    backdrop_color: "#1D6FA5F2"
+    padding: 22
+    font_size: 46
+
+  - name: "stage2"
+    type: "badge"
+    default_font: "Roboto-Bold.ttf"
+    fallback_fonts:
+      - "NotoSansCJKsc-Bold.otf"
+      - "NotoSansCJKtc-Bold.otf"
+      - "NotoSansCJKkr-Bold.otf"
+      - "NotoSansArabic-Bold.ttf"
+    max_width: 600
+    max_lines: 1
+    effects:
+      - "backdrop"
+      - "shadow"
+    anchor: "left"
+    x: 110
+    y: 995
+    color: "#FFFFFF"
+    backdrop_color: "#1D6FA5F2"
+    padding: 22
+    font_size: 46
+
+  - name: "stage3"
+    type: "badge"
+    default_font: "Roboto-Bold.ttf"
+    fallback_fonts:
+      - "NotoSansCJKsc-Bold.otf"
+      - "NotoSansCJKtc-Bold.otf"
+      - "NotoSansCJKkr-Bold.otf"
+      - "NotoSansArabic-Bold.ttf"
+    max_width: 600
+    max_lines: 1
+    effects:
+      - "backdrop"
+      - "shadow"
+    anchor: "left"
+    x: 110
+    y: 1385
+    color: "#FFFFFF"
+    backdrop_color: "#1D6FA5F2"
+    padding: 22
+    font_size: 46
+
+  - name: "stage4"
+    type: "badge"
+    default_font: "Roboto-Bold.ttf"
+    fallback_fonts:
+      - "NotoSansCJKsc-Bold.otf"
+      - "NotoSansCJKtc-Bold.otf"
+      - "NotoSansCJKkr-Bold.otf"
+      - "NotoSansArabic-Bold.ttf"
+    max_width: 600
+    max_lines: 1
+    effects:
+      - "backdrop"
+      - "shadow"
+    anchor: "left"
+    x: 110
+    y: 1760
+    color: "#FFFFFF"
+    backdrop_color: "#1D6FA5F2"
+    padding: 22
+    font_size: 46
+
+  - name: "caption"
+    type: "text"
+    default_font: "Roboto-Bold.ttf"
+    fallback_fonts:
+      - "NotoSansCJKsc-Bold.otf"
+      - "NotoSansCJKtc-Bold.otf"
+      - "NotoSansCJKkr-Bold.otf"
+      - "NotoSansArabic-Bold.ttf"
+    max_width: 1450
+    max_lines: 2
+    anchor: "bottom-center"
+    x: 800
+    y: 1905
+    color: "#4A6076"
+    font_size: 36
+
+  # 风险边界层：底部小字但必须可读（教学免责说明）
+  - name: "note"
+    type: "text"
+    default_font: "Roboto-Bold.ttf"
+    fallback_fonts:
+      - "NotoSansCJKsc-Bold.otf"
+      - "NotoSansCJKtc-Bold.otf"
+      - "NotoSansCJKkr-Bold.otf"
+      - "NotoSansArabic-Bold.ttf"
+    max_width: 1500
+    max_lines: 1
+    anchor: "bottom-center"
+    x: 800
+    y: 1972
+    color: "#6B7E93"
+    font_size: 30
+
+translations_file: "translations/en.json"
+output_format: "png"
+output_quality: 95

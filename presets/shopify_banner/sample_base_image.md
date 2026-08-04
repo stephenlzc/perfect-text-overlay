@@ -1,0 +1,8 @@
+Wide lifestyle hero photograph for an online fashion store homepage banner, completely plain solid white sneakers viewed from directly above with empty blank insoles showing no text no size markings no numbers no letters no logos no brand stamps no manufacturing marks, plain folded white linen shirt with no collar tag no inner label no buttons with text, plain blue shorts with no waistband tag no labels, plain small round sunglasses with no brand etchings, every item in the frame must be entirely free of any text letters numbers logos watermarks labels tags size marks or brand marks, flat-lay on a bright sunlit warm wooden plank surface with soft tropical palm leaf shadows, horizontal cinematic composition, soft natural lighting, generous empty space in the top third and bottom third of the frame reserved for headline and call-to-action overlays, warm inviting summer mood, absolutely no text no signage no watermarks no logos no brand marks no labels no writing no letters no numbers anywhere on any item or anywhere in the image, photorealistic natural product photography
+
+Output requirements:
+- Generate exactly one image at 2400x1200 pixels (2400 wide x 1200 tall).
+- Save the final image as: /var/folders/fy/vl6f7msn3nn8jhk04kj89qn40000gn/T/codex-image-gen.XXXXXX.RoOd2iTimP/output.png
+- Enforce exact pixel dimensions if the model produces a non-matching size: use 'sips -z 1200 2400' on macOS, or ImageMagick ('magick <file> -resize 2400x1200! <file>') elsewhere.
+- After saving, print a single line: FINAL_IMAGE_PATH=<absolute path to the saved PNG>
+- Style: photorealistic-natural

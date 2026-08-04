@@ -6,7 +6,7 @@
 
 > Fix imperfect AI-generated text in images by separating image generation and text overlay.
 
-![GenImageText Hero](https://raw.githubusercontent.com/stephenlzc/GenImageText/main/assets/hero.png)
+![GenImageText Hero](assets/hero.png)
 
 🌐 **English** | [简体中文](README.zh-CN.md) | [繁體中文](README.zh-TW.md) | [日本語](README.ja.md) | [한국어](README.ko.md)
 
@@ -17,7 +17,7 @@
 AI-generated images often contain garbled or imperfect text, especially for Chinese, Japanese, Korean (CJK) and other non-Latin scripts. **This tool solves this problem** by separating the workflow:
 
 1. **This Skill** separates your prompt → image-only prompt + text requirements
-2. **Your AI Tool** generates the clean base image (Midjourney, DALL-E, Stable Diffusion, etc.)
+2. **Your AI Tool** generates the clean base image (Midjourney, GPT Image 2, Stable Diffusion, etc.)
 3. **This Skill** analyzes the image for optimal text placement
 4. **This Skill** renders perfect text with professional typography
 
@@ -30,11 +30,11 @@ Use **any** of these tools for Step 2 (image generation):
 | Tool | Platform | Best For |
 |------|----------|----------|
 | **Midjourney** | Discord | High-quality artistic images |
-| **DALL-E 3** | ChatGPT, OpenAI API | Easy to use, great prompt understanding |
+| **GPT Image 2** | ChatGPT, OpenAI API | Easy to use, great prompt understanding |
 | **Stable Diffusion** | Local, Hugging Face, Replicate | Open-source, customizable |
 | **Google Gemini/Imagen** | Google AI Studio, Gemini Pro | Integrated with Google's ecosystem |
 | **Adobe Firefly** | Adobe Creative Suite | Commercial use, safe for business |
-| **Microsoft Bing Image Creator** | Bing, Microsoft Designer | Free, powered by DALL-E 3 |
+| **Microsoft Bing Image Creator** | Bing, Microsoft Designer | Free, powered by GPT Image |
 | **Flux.1** | API, Local | High-quality open-source model |
 | **Leonardo.ai** | Web, App | Game assets, concept art |
 | **Ideogram** | Web | Text rendering in images |
@@ -89,7 +89,7 @@ result = separate_prompt("Movie poster with 'Interstellar' title")
 
 Use the `image_prompt` with your preferred AI image generator:
 - **Midjourney** - Discord-based generation
-- **DALL-E 3** (ChatGPT Plus, OpenAI API)
+- **GPT Image 2** (ChatGPT Plus, OpenAI API)
 - **Stable Diffusion** - Local or cloud-based
 - **Google Gemini/Imagen**
 - **Adobe Firefly**
@@ -120,6 +120,47 @@ output_path = render_text_on_image(
     }
 )
 ```
+
+---
+
+## Multilingual Batch Mode (E-commerce · Academic · Medical)
+
+Turn a single text-free source image into a complete localized asset set: **1 base image × 7 bundled languages** (`en`, `de`, `ja`, `ko`, `zh-CN`, `zh-TW`, and `ar`) **→ N finished images** in one batch — covering e-commerce, academic, and medical scenes.
+
+- **Configuration-driven templates** — eight ready-to-use presets are included in [`presets/`](presets/):
+
+  **E-commerce**
+
+  | Preset | Canvas | Theme |
+  |---|---|---|
+  | `amazon_main_image` | 2000×2000 | Wireless earbuds main image (electronics) |
+  | `shopify_banner` | 2400×1200 | Summer sneaker / fashion banner |
+  | `social_square` | 1080×1080 | Skincare serum social square (beauty) |
+  | `poster_a4` | 2480×3508 | Smartwatch promotion poster |
+  | `coffee_promo` | 1080×1080 | Coffee & food promo square |
+  | `home_decor_banner` | 2400×1200 | Nordic home decor banner |
+
+  **Academic & Medical**
+
+  | Preset | Canvas | Theme |
+  |---|---|---|
+  | `academic_flowchart` | 2400×1350 | Academic research flowchart (4 nodes) |
+  | `medical_mechanism` | 1600×2000 | Medical mechanism diagram (3 stages) |
+
+- **Aesthetic layout engine** — analyzes base-image brightness and safe zones, then intelligently adjusts text position, contrast, and effects for readability.
+- **Rich text effects** — `shadow`, `outline`, `glow`, translucent `backdrop`, and automatic pill-shaped badges.
+- **Full RTL support** — Arabic and other right-to-left text are shaped correctly with `raqm`.
+- **Four-way concurrent batching** — renders multiple language variants in parallel for faster delivery.
+
+### Quick Start
+
+```bash
+.venv/bin/python gen_ecommerce.py init --preset amazon_main_image --project-dir projects/my-product
+.venv/bin/python gen_ecommerce.py batch --config projects/my-product/template.yaml --base-image projects/my-product/sample_base_image.png --output projects/my-product/output
+ls projects/my-product/output
+```
+
+See the [complete e-commerce guide](README_ECOMMERCE.md) and browse the [built-in presets](presets/) for templates, translations, and rendered examples.
 
 ---
 
@@ -179,6 +220,14 @@ GenImageText/
 ├── assets/fonts/           # Fonts directory
 └── references/             # Reference materials
 ```
+
+---
+
+## Credits
+
+All preset sample base images (`presets/*/sample_base_image.png`) and the hero base image (`assets/hero_base.png`) in this repository were generated with [**codex-image-gen**](https://github.com/stephenlzc/codex-image-gen), a sister project by the same author. It uses your local Codex CLI OAuth login to generate images for free, with no API key required.
+
+If you need clean, text-free source artwork before adding typography with GenImageText, codex-image-gen is a natural companion and highly recommended.
 
 ---
 

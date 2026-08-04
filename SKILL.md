@@ -1,6 +1,6 @@
 ---
 name: GenImageText
-description: Add perfect text to AI-generated images. NOT an image generator - this skill overlays text on images created by user's AI tools (Midjourney, DALL-E, Stable Diffusion, Gemini, etc.). Solves garbled text in AI-generated images by separating image generation and text rendering. Triggers on keywords like "create poster", "flowchart", "image with text".
+description: Add perfect text to AI-generated images. NOT an image generator - this skill overlays text on images created by user's AI tools (Midjourney, GPT Image 2, Stable Diffusion, Gemini, etc.). Solves garbled text in AI-generated images by separating image generation and text rendering. Triggers on keywords like "create poster", "flowchart", "image with text".
 ---
 
 # GenImageText
@@ -8,7 +8,7 @@ description: Add perfect text to AI-generated images. NOT an image generator - t
 > ⚠️ **IMPORTANT**: This skill is NOT an image generator. It adds text to images created by your AI image tools.
 
 This skill solves the common problem of AI-generated images having imperfect or garbled text (especially CJK characters). It separates the workflow into two parts:
-1. **User generates image** using their preferred AI tool (Midjourney, DALL-E, Stable Diffusion, Gemini, etc.)
+1. **User generates image** using their preferred AI tool (Midjourney, GPT Image 2, Stable Diffusion, Gemini, etc.)
 2. **This skill adds text** to the generated image with perfect typography
 
 ## Supported AI Image Generators
@@ -18,11 +18,11 @@ This skill can work with ANY AI image generation tool, including:
 | Tool | Platform | Best For |
 |------|----------|----------|
 | **Midjourney** | Discord | High-quality artistic images |
-| **DALL-E 3** | ChatGPT, OpenAI API | Easy to use, great prompt understanding |
+| **GPT Image 2** | ChatGPT, OpenAI API | Easy to use, great prompt understanding |
 | **Stable Diffusion** | Local, Hugging Face, Replicate | Open-source, customizable |
 | **Google Gemini/Imagen** | Google AI Studio, Gemini Pro | Integrated with Google's ecosystem |
 | **Adobe Firefly** | Adobe Creative Suite | Commercial use, safe for business |
-| **Microsoft Bing Image Creator** | Bing, Microsoft Designer | Free, powered by DALL-E 3 |
+| **Microsoft Bing Image Creator** | Bing, Microsoft Designer | Free, powered by GPT Image |
 | **Flux.1** | API, Local | High-quality open-source model |
 | **Leonardo.ai** | Web, App | Game assets, concept art |
 | **Ideogram** | Web | Text rendering in images |
@@ -48,7 +48,7 @@ Step 1: Prompt Separation        ← This Skill
 
 Step 2: Image Generation         ← USER'S AI TOOL ⭐
         ├─ User generates base image using their preferred AI
-        │  (Midjourney, DALL-E, Stable Diffusion, Gemini, etc.)
+        │  (Midjourney, GPT Image 2, Stable Diffusion, Gemini, etc.)
         ├─ Use the "image-only prompt" from Step 1
         └─ Output: Clean image without text
 
@@ -104,11 +104,11 @@ result = separate_prompt(user_input)
 
 Use the `image_prompt` from Step 1 to generate the base image using:
 - **Midjourney** - Discord-based AI image generation
-- **DALL-E 3** (ChatGPT Plus, OpenAI API) - OpenAI's image generator
+- **GPT Image 2** (ChatGPT Plus, OpenAI API) - OpenAI's image generator
 - **Stable Diffusion** - Local or web-based generation
 - **Google Gemini/Imagen** - Google's AI image tool
 - **Adobe Firefly** - Adobe's AI image tool
-- **Microsoft Bing Image Creator** - Free, powered by DALL-E 3
+- **Microsoft Bing Image Creator** - Free, powered by GPT Image
 - **Flux.1** - Open-source high-quality model
 - **Other AI image generators** - Any tool the user prefers
 
@@ -294,7 +294,7 @@ Step 1 (This Skill):
   ├─ Image prompt: "sci-fi movie poster, space theme..." (no text)
   └─ Text: "Interstellar"
 
-Step 2 (User's AI Tool - Midjourney/DALL-E):
+Step 2 (User's AI Tool - Midjourney/GPT Image 2):
   └─ Generate base image using the prompt from Step 1
 
 Step 3-5 (This Skill):

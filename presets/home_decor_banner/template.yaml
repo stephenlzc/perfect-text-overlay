@@ -1,0 +1,100 @@
+name: "home_decor_banner"
+scene_type: "banner"
+canvas_width: 2400
+canvas_height: 1200
+base_image_prompt: "Scandinavian style cozy living room interior, beige linen sofa with textured cushions and a warm knitted throw blanket, ceramic vase with pampas grass on a light oak side table, soft afternoon sunlight through sheer curtains, calm neutral cream and terracotta tones, wide horizontal composition with clean uncluttered space in the upper left and lower right areas for text overlays, no text, no signage, no watermark, no logos"
+safe_zones:
+  - name: "headline_zone"
+    x: 140
+    y: 320
+    width: 1500
+    height: 360
+  - name: "subheadline_zone"
+    x: 140
+    y: 660
+    width: 1400
+    height: 160
+  - name: "cta_zone"
+    x: 1640
+    y: 960
+    width: 660
+    height: 180
+text_layers:
+  - name: "headline"
+    type: "text"
+    default_font: "Roboto-Bold.ttf"
+    fallback_fonts:
+      - "OpenSans-Bold.ttf"
+      - "NotoSansCJKsc-Bold.otf"
+      - "NotoSansCJKtc-Bold.otf"
+      - "NotoSansCJKkr-Bold.otf"
+      - "NotoSansArabic-Bold.ttf"
+    max_width: 1500
+    max_lines: 2
+    effects:
+      - "shadow"
+      - "backdrop"
+    anchor: "top-left"
+    x: 160
+    y: 360
+    color: "#FDF6EC"
+    backdrop_color: "#3E342BD0"
+    padding: 26
+    stroke_color: "#000000"
+    stroke_width: 0
+    font_size: 150
+    rtl_flip: false
+
+  - name: "subheadline"
+    type: "text"
+    default_font: "OpenSans-Bold.ttf"
+    fallback_fonts:
+      - "Roboto-Bold.ttf"
+      - "NotoSansCJKsc-Bold.otf"
+      - "NotoSansCJKtc-Bold.otf"
+      - "NotoSansCJKkr-Bold.otf"
+      - "NotoSansArabic-Bold.ttf"
+    max_width: 1300
+    max_lines: 2
+    effects:
+      - "shadow"
+      - "backdrop"
+    anchor: "top-left"
+    x: 160
+    y: 680
+    color: "#F5EDE0"
+    backdrop_color: "#3E342BB8"
+    padding: 16
+    font_size: 64
+    rtl_flip: false
+
+  - name: "cta"
+    type: "badge"
+    default_font: "Roboto-Bold.ttf"
+    fallback_fonts:
+      - "OpenSans-Bold.ttf"
+      - "NotoSansCJKsc-Bold.otf"
+      - "NotoSansCJKtc-Bold.otf"
+      - "NotoSansCJKkr-Bold.otf"
+      - "NotoSansArabic-Bold.ttf"
+    max_width: 540
+    max_lines: 1
+    effects:
+      - "shadow"
+      - "backdrop"
+      - "glow"
+    anchor: "bottom-right"
+    x: 2280
+    y: 1070
+    color: "#FDF6EC"
+    backdrop_color: "#C4784AE6"
+    padding: 30
+    stroke_color: "#000000"
+    stroke_width: 0
+    glow_color: "#E8B98A"
+    font_size: 76
+    rtl_flip: false
+
+translations_file: "translations/en.json"
+output_format: "png"
+output_quality: 95

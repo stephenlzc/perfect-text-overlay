@@ -1,0 +1,90 @@
+name: "amazon_main_image"
+scene_type: "product_main"
+canvas_width: 2000
+canvas_height: 2000
+base_image_prompt: >
+  Professional product photography of wireless headphones on pure white background,
+  centered composition, soft studio lighting, no text, no watermark, no logos,
+  clean negative space at bottom 20% for text overlay, high detail, 8k quality
+safe_zones:
+  - region: "bottom_center"
+    bbox: [400, 1600, 1600, 1900]
+    suggested_for: "title"
+  - region: "bottom_right"
+    bbox: [1400, 1700, 1900, 1850]
+    suggested_for: "badge"
+text_layers:
+  # Product title — bottom-center, dark ink with subtle shadow for depth.
+  # max_width + auto-shrink keeps long CJK / Arabic titles inside the safe band;
+  # max_lines=2 is a safety net so a too-long string falls back to two lines
+  # rather than overflowing the canvas.
+  - name: "product_title"
+    type: "text"
+    default_font: "Roboto-Bold.ttf"
+    fallback_fonts:
+      - "OpenSans-Bold.ttf"
+      - "NotoSansCJKsc-Bold.otf"
+      - "NotoSansCJKtc-Bold.otf"
+      - "NotoSansCJKkr-Bold.otf"
+      - "NotoSansArabic-Bold.ttf"
+    max_width: 1500
+    max_lines: 2
+    effects: ["shadow"]
+    anchor: "bottom-center"
+    x: 1000
+    y: 1720
+    color: "#1a1a1a"
+    font_size: 84
+    rtl_flip: true
+
+  # Price — bottom-right, deep red with a soft pink rounded backdrop and a
+  # darker red outline. The backdrop pill is a rounded rect (the renderer
+  # only emits a true pill for `type: badge`); padding 22 keeps the tag
+  # visually generous without crowding the right edge of the canvas.
+  - name: "price"
+    type: "price"
+    default_font: "Roboto-Bold.ttf"
+    fallback_fonts:
+      - "OpenSans-Bold.ttf"
+      - "NotoSansCJKsc-Bold.otf"
+      - "NotoSansCJKtc-Bold.otf"
+      - "NotoSansCJKkr-Bold.otf"
+    max_width: 520
+    max_lines: 1
+    effects: ["backdrop", "outline"]
+    anchor: "bottom-right"
+    x: 1870
+    y: 1900
+    color: "#e63946"
+    font_size: 110
+    backdrop_color: "#ffe8eb"
+    stroke_color: "#b51d2a"
+    stroke_width: 3
+    padding: 22
+    rtl_flip: false
+
+  # Badge — top-right pill (renderer treats `type: badge` as a pill shape,
+  # radius = half the pill height). Black backdrop with white text passes
+  # WCAG contrast; warm red glow adds an Amazon-style "hot deal" highlight.
+  - name: "badge"
+    type: "badge"
+    default_font: "Roboto-Bold.ttf"
+    fallback_fonts:
+      - "OpenSans-Bold.ttf"
+      - "NotoSansCJKsc-Bold.otf"
+    max_width: 360
+    max_lines: 1
+    effects: ["backdrop", "glow"]
+    anchor: "top-right"
+    x: 1840
+    y: 180
+    color: "#FFFFFF"
+    font_size: 54
+    backdrop_color: "#1a1a1a"
+    glow_color: "#ff6b6b"
+    padding: 28
+    rtl_flip: false
+
+translations_file: "translations/en.json"
+output_format: "png"
+output_quality: 95

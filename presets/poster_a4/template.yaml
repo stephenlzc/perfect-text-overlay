@@ -1,0 +1,132 @@
+name: "poster_a4"
+scene_type: "poster"
+canvas_width: 2480
+canvas_height: 3508
+base_image_prompt: "artistic composition with clear text-safe zones at top and bottom, no embedded text, vertical 2480x3508 print-ready canvas"
+safe_zones:
+  - name: "title_zone"
+    x: 200
+    y: 250
+    width: 2080
+    height: 850
+  - name: "price_zone"
+    x: 200
+    y: 2300
+    width: 2080
+    height: 500
+  - name: "cta_zone"
+    x: 200
+    y: 3000
+    width: 2080
+    height: 450
+text_layers:
+  # 标题：白色巨字 + 金色光晕 + 黑阴影，深底高对比
+  - name: "title"
+    type: "text"
+    default_font: "Roboto-Bold.ttf"
+    fallback_fonts:
+      - "NotoSansCJKsc-Bold.otf"
+      - "NotoSansCJKtc-Bold.otf"
+      - "NotoSansCJKkr-Bold.otf"
+      - "NotoSansArabic-Bold.ttf"
+    max_width: 2080
+    max_lines: 2
+    effects:
+      - "shadow"
+      - "glow"
+    anchor: "top-center"
+    x: 1240
+    y: 410
+    color: "#FFFFFF"
+    font_size: 210
+    glow_color: "#FFC83D"
+    stroke_color: "#FFFFFF"
+    stroke_width: 0
+    rtl_flip: true
+
+  # 副标题：柔和浅蓝紫色，避免抢戏；y 调到两行标题下方
+  - name: "subtitle"
+    type: "text"
+    default_font: "OpenSans-Bold.ttf"
+    fallback_fonts:
+      - "NotoSansCJKsc-Bold.otf"
+      - "Roboto-Bold.ttf"
+    max_width: 1900
+    max_lines: 2
+    effects:
+      - "shadow"
+    anchor: "top-center"
+    x: 1240
+    y: 1080
+    color: "#D8DCFF"
+    font_size: 78
+    rtl_flip: false
+
+  # 价格：海报视觉焦点——超大的金色 + 白色描边 + 暖色发光
+  - name: "price"
+    type: "price"
+    default_font: "Roboto-Bold.ttf"
+    fallback_fonts:
+      - "OpenSans-Bold.ttf"
+      - "NotoSansCJKsc-Bold.otf"
+      - "NotoSansCJKkr-Bold.otf"
+      - "NotoSansArabic-Bold.ttf"
+    max_width: 2000
+    max_lines: 1
+    effects:
+      - "outline"
+      - "glow"
+    anchor: "center"
+    x: 1240
+    y: 2480
+    color: "#FFD23F"
+    font_size: 320
+    stroke_color: "#FFFFFF"
+    stroke_width: 6
+    glow_color: "#FF9F1C"
+    rtl_flip: false
+
+  # CTA 按钮：金黄胶囊衬底 + 白色字 + 暖光，按 modifier 对齐
+  - name: "cta"
+    type: "badge"
+    default_font: "Roboto-Bold.ttf"
+    fallback_fonts:
+      - "NotoSansCJKsc-Bold.otf"
+      - "NotoSansCJKtc-Bold.otf"
+      - "NotoSansArabic-Bold.ttf"
+    max_width: 900
+    max_lines: 1
+    effects:
+      - "backdrop"
+      - "glow"
+      - "shadow"
+    anchor: "bottom-center"
+    x: 1240
+    y: 3220
+    color: "#1B1235"
+    backdrop_color: "#FFC83D"
+    font_size: 96
+    glow_color: "#FFD56B"
+    padding: 50
+    rtl_flip: false
+
+  # 免责声明：底部小灰字，低调
+  - name: "disclaimer"
+    type: "text"
+    default_font: "OpenSans-Bold.ttf"
+    fallback_fonts:
+      - "Roboto-Bold.ttf"
+      - "NotoSansCJKsc-Bold.otf"
+    max_width: 2000
+    max_lines: 2
+    effects: []
+    anchor: "bottom-center"
+    x: 1240
+    y: 3430
+    color: "#9AA0C7"
+    font_size: 38
+    rtl_flip: false
+
+translations_file: "translations/en.json"
+output_format: "png"
+output_quality: 95

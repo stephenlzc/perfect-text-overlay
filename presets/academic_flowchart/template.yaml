@@ -1,0 +1,165 @@
+name: "academic_flowchart"
+scene_type: "academic"
+canvas_width: 2400
+canvas_height: 1350
+base_image_prompt: "Clean minimalist academic presentation slide background, very light cool gray with a subtle dotted grid, four empty rounded rectangle placeholders arranged horizontally in the middle connected by thin elegant arrows flowing left to right, professional research figure style, generous empty space at top for a title and at bottom for a caption, flat design, no text, no letters, no numbers, no labels, no watermark"
+safe_zones:
+  # 顶部：标题安全区（y 100–280）
+  - name: "title_zone"
+    x: 80
+    y: 100
+    width: 2240
+    height: 200
+  # 中部：节点带（y 420–920，四个方框水平居中一线）
+  - name: "node_band"
+    x: 80
+    y: 420
+    width: 2240
+    height: 500
+  # 底部：脚注安全区（y 1180–1300）
+  - name: "footer_zone"
+    x: 80
+    y: 1180
+    width: 2240
+    height: 120
+text_layers:
+  # 标题：左上方，深蓝灰 + 轻阴影，论文式排版感
+  - name: "title"
+    type: "text"
+    default_font: "Roboto-Bold.ttf"
+    fallback_fonts:
+      - "OpenSans-Bold.ttf"
+      - "NotoSansCJKsc-Bold.otf"
+      - "NotoSansCJKtc-Bold.otf"
+      - "NotoSansCJKkr-Bold.otf"
+      - "NotoSansArabic-Bold.ttf"
+    max_width: 1800
+    max_lines: 1
+    effects:
+      - "shadow"
+    anchor: "top-left"
+    x: 150
+    y: 180
+    color: "#1F2A44"
+    font_size: 96
+    rtl_flip: false
+
+  # 节点 1 — 数据采集（最左方框中心）
+  - name: "node1"
+    type: "badge"
+    default_font: "Roboto-Bold.ttf"
+    fallback_fonts:
+      - "OpenSans-Bold.ttf"
+      - "NotoSansCJKsc-Bold.otf"
+      - "NotoSansCJKtc-Bold.otf"
+      - "NotoSansCJKkr-Bold.otf"
+      - "NotoSansArabic-Bold.ttf"
+    max_width: 420
+    max_lines: 1
+    effects:
+      - "shadow"
+      - "backdrop"
+    anchor: "center"
+    x: 334
+    y: 667
+    color: "#FFFFFF"
+    font_size: 52
+    backdrop_color: "#2B5EA7FF"
+    padding: 24
+    rtl_flip: false
+
+  # 节点 2 — 数据预处理
+  - name: "node2"
+    type: "badge"
+    default_font: "Roboto-Bold.ttf"
+    fallback_fonts:
+      - "OpenSans-Bold.ttf"
+      - "NotoSansCJKsc-Bold.otf"
+      - "NotoSansCJKtc-Bold.otf"
+      - "NotoSansCJKkr-Bold.otf"
+      - "NotoSansArabic-Bold.ttf"
+    max_width: 420
+    max_lines: 1
+    effects:
+      - "shadow"
+      - "backdrop"
+    anchor: "center"
+    x: 912
+    y: 729
+    color: "#FFFFFF"
+    font_size: 52
+    backdrop_color: "#2B5EA7FF"
+    padding: 24
+    rtl_flip: false
+
+  # 节点 3 — 模型训练
+  - name: "node3"
+    type: "badge"
+    default_font: "Roboto-Bold.ttf"
+    fallback_fonts:
+      - "OpenSans-Bold.ttf"
+      - "NotoSansCJKsc-Bold.otf"
+      - "NotoSansCJKtc-Bold.otf"
+      - "NotoSansCJKkr-Bold.otf"
+      - "NotoSansArabic-Bold.ttf"
+    max_width: 420
+    max_lines: 1
+    effects:
+      - "shadow"
+      - "backdrop"
+    anchor: "center"
+    x: 1477
+    y: 667
+    color: "#FFFFFF"
+    font_size: 52
+    backdrop_color: "#2B5EA7FF"
+    padding: 24
+    rtl_flip: false
+
+  # 节点 4 — 效果评估（最右方框中心）
+  - name: "node4"
+    type: "badge"
+    default_font: "Roboto-Bold.ttf"
+    fallback_fonts:
+      - "OpenSans-Bold.ttf"
+      - "NotoSansCJKsc-Bold.otf"
+      - "NotoSansCJKtc-Bold.otf"
+      - "NotoSansCJKkr-Bold.otf"
+      - "NotoSansArabic-Bold.ttf"
+    max_width: 420
+    max_lines: 1
+    effects:
+      - "shadow"
+      - "backdrop"
+    anchor: "center"
+    x: 2063
+    y: 729
+    color: "#FFFFFF"
+    font_size: 52
+    backdrop_color: "#2B5EA7FF"
+    padding: 24
+    rtl_flip: false
+
+  # 脚注：底部居中，灰色论文图注样式
+  - name: "footer"
+    type: "text"
+    default_font: "OpenSans-Bold.ttf"
+    fallback_fonts:
+      - "Roboto-Bold.ttf"
+      - "NotoSansCJKsc-Bold.otf"
+      - "NotoSansCJKtc-Bold.otf"
+      - "NotoSansCJKkr-Bold.otf"
+      - "NotoSansArabic-Bold.ttf"
+    max_width: 2000
+    max_lines: 1
+    effects: []
+    anchor: "bottom-center"
+    x: 1200
+    y: 1240
+    color: "#5A6478"
+    font_size: 40
+    rtl_flip: false
+
+translations_file: "translations/en.json"
+output_format: "png"
+output_quality: 95

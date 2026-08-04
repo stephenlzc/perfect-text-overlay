@@ -11,6 +11,9 @@ __pycache__/
 dist/
 build/
 
+# Virtual environment
+.venv/
+
 # IDE
 .vscode/
 .idea/
@@ -23,6 +26,8 @@ build/
 *.jpeg
 !assets/font_preview.png
 !assets/hero.png
+!assets/hero_*.png
+!presets/**/*.png
 
 # Outputs directory - keep directory but ignore image files
 !outputs/

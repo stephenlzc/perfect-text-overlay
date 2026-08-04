@@ -1,0 +1,8 @@
+{
+  "title": "Forschungsablauf",
+  "node1": "Datenerhebung",
+  "node2": "Vorverarbeitung",
+  "node3": "Modelltraining",
+  "node4": "Evaluation",
+  "footer": "Abb. 1. Übersicht der End-to-End-Pipeline"
+}

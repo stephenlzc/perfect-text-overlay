@@ -6,7 +6,7 @@
 
 > 画像生成とテキストレンダリングを分離することで、AI生成画像の文字化け問題を解決します。
 
-![GenImageText Hero](https://raw.githubusercontent.com/stephenlzc/GenImageText/main/assets/hero.png)
+![GenImageText Hero](https://raw.githubusercontent.com/stephenlzc/GenImageText/main/assets/hero_ja.png)
 
 🌐 [English](README.md) | [简体中文](README.zh-CN.md) | [繁體中文](README.zh-TW.md) | **日本語** | [한국어](README.ko.md)
 
@@ -17,7 +17,7 @@
 AIが生成した画像には、特に中国語・日本語・韓国語（CJK）などの非ラテン文字で、文字が化けたり不完全になったりする問題がよくあります。**本ツールは以下の方法でこの問題を解決します**：
 
 1. **本スキル** プロンプトを分離 → 画像専用プロンプト + テキスト要件
-2. **お使いの AI ツール** クリーンなベース画像を生成（Midjourney、DALL-E、Stable Diffusion など）
+2. **お使いの AI ツール** クリーンなベース画像を生成（Midjourney、GPT Image 2、Stable Diffusion など）
 3. **本スキル** 画像を分析して最適なテキスト配置領域を特定
 4. **本スキル** 完璧なテキストをレンダリング（プロフェッショナルなタイポグラフィ使用）
 
@@ -30,11 +30,11 @@ AIが生成した画像には、特に中国語・日本語・韓国語（CJK）
 | ツール | プラットフォーム | 最適な用途 |
 |--------|----------------|-----------|
 | **Midjourney** | Discord | 高品質なアート画像 |
-| **DALL-E 3** | ChatGPT、OpenAI API | 使いやすく、プロンプト理解が優秀 |
+| **GPT Image 2** | ChatGPT、OpenAI API | 使いやすく、プロンプト理解が優秀 |
 | **Stable Diffusion** | ローカル、Hugging Face、Replicate | オープンソース、カスタマイズ可能 |
 | **Google Gemini/Imagen** | Google AI Studio、Gemini Pro | Google エコシステム統合 |
 | **Adobe Firefly** | Adobe Creative Suite | 商業利用に安全 |
-| **Microsoft Bing Image Creator** | Bing、Microsoft Designer | 無料、DALL-E 3 搭載 |
+| **Microsoft Bing Image Creator** | Bing、Microsoft Designer | 無料、GPT Image 搭載 |
 | **Flux.1** | API、ローカル | 高品質なオープンソースモデル |
 | **Leonardo.ai** | Web、アプリ | ゲームアセット、コンセプトアート |
 | **Ideogram** | Web | 画像内のテキストレンダリング |
@@ -89,7 +89,7 @@ result = separate_prompt("映画ポスター、タイトルは'インタース�
 
 `image_prompt` を使用して、お好みの AI 画像生成ツールで画像を生成します：
 - **Midjourney** - Discordベースの生成
-- **DALL-E 3**（ChatGPT Plus、OpenAI API）
+- **GPT Image 2**（ChatGPT Plus、OpenAI API）
 - **Stable Diffusion** - ローカルまたはクラウドベース
 - **Google Gemini/Imagen**
 - **Adobe Firefly**
@@ -120,6 +120,32 @@ output_path = render_text_on_image(
     }
 )
 ```
+
+---
+
+## 多言語バッチ生成モード（EC・学術・医療）
+
+ステップ 1〜4 の単発ワークフローに加え、**多言語バッチ生成モード**を同梱しています。Eコマースはもちろんのこと、学術・医療の図解もカバーし、1 枚の文字なしベース画像 × 7 言語（en / de / ja / ko / zh-CN / zh-TW / ar）で、N 枚の成品をワンコマンドで一括生成できます。
+
+### 特徴
+
+- **設定駆動テンプレート** — `presets/` 直下の 8 種類に `template.yaml` と 7 言語分の翻訳 JSON が同梱済み。`gen_ecommerce.py init --preset <name>` で雛形をプロジェクトディレクトリに展開できます。
+  - **Eコマース**：amazon_main_image（電子製品メイン画像 2000x2000）、shopify_banner（ファッションバナー 2400x1200）、social_square（コスメ SNS 方形 1080x1080）、poster_a4（スマートウォッチ セールポスター 2480x3508）、coffee_promo（カフェ・飲食プロモ 1080x1080）、home_decor_banner（北欧インテリア バナー 2400x1200）
+  - **学術・医療**：academic_flowchart（研究ワークフロー図 2400x1350）、medical_mechanism（医療メカニズム図 1600x2000）
+- **美学レイアウトエンジン** — `scripts/layout_composer.py` がベース画像の明るさ・色・安全エリア・可読性を解析し、文字位置の微調整、コントラスト不足時の自動カラー補正、可読性が低い領域への `backdrop` / `shadow` 自動付与を行います。
+- **豊富な文字効果** — 影（`shadow`）・縁取り（`outline`）・光彩（`glow`）・半透明パネル（`backdrop`）に加え、`badge` タイプは自動でピル（pill）型カプセルになります。
+- **RTL 完全対応** — アラビア語などの右から左に書く言語も字形と整形が正しくレンダリングされます（`assets/fonts/NotoSansArabic-Bold.ttf` 同梱）。
+- **4 並列バッチ** — `BatchPipeline` が `ThreadPoolExecutor(max_workers=4)` で複数言語を同時描画し、所要時間を短縮します。
+
+### クイックスタート（3 行）
+
+```bash
+.venv/bin/python gen_ecommerce.py init    --preset amazon_main_image --project-dir projects/winter_2026
+.venv/bin/python gen_ecommerce.py prompt  --config presets/amazon_main_image/template.yaml   # プロンプトを取り出し、お使いの AI 画像生成ツールで base_image.png を生成
+.venv/bin/python gen_ecommerce.py batch   --config presets/amazon_main_image/template.yaml --base-image projects/winter_2026/base_image.png --output projects/winter_2026/renders
+```
+
+詳細は [`README_ECOMMERCE.md`](README_ECOMMERCE.md) を参照してください。プリセット一覧とサンプルベース画像は [`presets/`](presets/) にあります。
 
 ---
 
@@ -179,6 +205,12 @@ GenImageText/
 ├── assets/fonts/           # フォントディレクトリ
 └── references/             # 参考資料
 ```
+
+---
+
+## 謝辞
+
+`presets/` 配下のサンプルベース画像（`sample_base_image.png`）と、このリポジトリの hero 用ベース画像（`assets/hero_base.png`）は、作者の姉妹プロジェクト **[codex-image-gen](https://github.com/stephenlzc/codex-image-gen)** で生成しました。codex-image-gen はローカル Codex CLI 経由で OAuth ログインして動く無料の画像生成ツールで、API キーは不要です。ベース画像生成の代替手段としておすすめです。
 
 ---
 

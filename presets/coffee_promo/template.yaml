@@ -1,0 +1,110 @@
+name: "coffee_promo"
+scene_type: "social"
+canvas_width: 1080
+canvas_height: 1080
+base_image_prompt: "Cozy artisan coffee shop scene, a cup of freshly brewed flat white with delicate latte art on a rustic wooden table, scattered roasted coffee beans and a small burlap sack, warm morning sunlight from the side, soft bokeh cafe background, generous empty space at the top of the frame for a title overlay, warm brown and cream tones, square format, no text, no signage, no watermark, no logos"
+safe_zones:
+  - name: "title_zone"
+    region: "top_center"
+    x: 90
+    y: 90
+    width: 900
+    height: 260
+  - name: "offer_zone"
+    region: "middle_bottom"
+    x: 140
+    y: 800
+    width: 800
+    height: 140
+  - name: "price_zone"
+    region: "bottom_right"
+    x: 700
+    y: 940
+    width: 380
+    height: 140
+text_layers:
+  # Hero title — warm cream text on an auto-dark pill (adapts to image),
+  # sitting in the top headband with a soft shadow + 20px padding so the
+  # copy stays legible against the busy cafe backdrop.
+  - name: "title"
+    type: "text"
+    default_font: "Roboto-Bold.ttf"
+    fallback_fonts:
+      - "OpenSans-Bold.ttf"
+      - "NotoSansCJKsc-Bold.otf"
+      - "NotoSansCJKtc-Bold.otf"
+      - "NotoSansCJKkr-Bold.otf"
+      - "NotoSansArabic-Bold.ttf"
+    max_width: 900
+    max_lines: 2
+    effects:
+      - "shadow"
+      - "backdrop"
+    anchor: "top-center"
+    x: 540
+    y: 180
+    color: "#FFF8E7"
+    font_size: 92
+    rtl_flip: false
+    backdrop_color: "auto-dark"
+    padding: 20
+
+  # Offer — coffee-brown pill with cream text and a warm caramel glow.
+  # Placed at mid-bottom so the eye lands on the headline first, then the
+  # offer, then the price sticker — classic F-pattern for a promo.
+  # max_width keeps the pill from overrunning the price sticker at the
+  # bottom-right when the copy is long (EN "Buy 1 Get 1 Free", AR offer).
+  - name: "offer"
+    type: "badge"
+    default_font: "Roboto-Bold.ttf"
+    fallback_fonts:
+      - "OpenSans-Bold.ttf"
+      - "NotoSansCJKsc-Bold.otf"
+      - "NotoSansCJKtc-Bold.otf"
+      - "NotoSansCJKkr-Bold.otf"
+      - "NotoSansArabic-Bold.ttf"
+    max_width: 680
+    max_lines: 1
+    effects:
+      - "shadow"
+      - "glow"
+      - "backdrop"
+    anchor: "center"
+    x: 540
+    y: 830
+    color: "#FFF8E7"
+    font_size: 64
+    rtl_flip: true
+    backdrop_color: "#6F4E37E6"
+    glow_color: "#D4A574"
+    padding: 28
+
+  # Price tag — bright yellow pill in the bottom-right with deep-brown text.
+  # Acts as the promo sticker that closes the eye path. Tight max_width
+  # keeps it as a corner sticker rather than a band.
+  - name: "price_tag"
+    type: "price"
+    default_font: "Roboto-Bold.ttf"
+    fallback_fonts:
+      - "OpenSans-Bold.ttf"
+      - "NotoSansCJKsc-Bold.otf"
+      - "NotoSansCJKtc-Bold.otf"
+      - "NotoSansCJKkr-Bold.otf"
+      - "NotoSansArabic-Bold.ttf"
+    max_width: 320
+    max_lines: 1
+    effects:
+      - "shadow"
+      - "backdrop"
+    anchor: "bottom-right"
+    x: 990
+    y: 1010
+    color: "#3B2F2F"
+    font_size: 64
+    rtl_flip: false
+    backdrop_color: "#FFD166"
+    padding: 20
+
+translations_file: "translations/en.json"
+output_format: "png"
+output_quality: 95

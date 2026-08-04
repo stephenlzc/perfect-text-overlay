@@ -1,0 +1,112 @@
+name: "social_square"
+scene_type: "social"
+canvas_width: 1080
+canvas_height: 1080
+base_image_prompt: "elegant skincare product photography, amber glass serum bottle with dropper standing on a smooth wet stone with water droplets and soft green eucalyptus leaves around, spa aesthetic, gentle natural lighting with soft shadows, muted sage green and cream tones, generous negative space around the product, square format optimized for Instagram and Facebook feed, no text, no watermark, no logos, no brand labels"
+safe_zones:
+  # Top: open cream/ivory negative space — title placement.
+  - name: "top_center_zone"
+    region: "top_center"
+    x: 80
+    y: 60
+    width: 920
+    height: 220
+  # Center: product + wet stone + eucalyptus — keep clear of overlay text.
+  - name: "center_zone"
+    region: "middle_center"
+    x: 240
+    y: 240
+    width: 600
+    height: 600
+  # Bottom-right: price tag.
+  - name: "bottom_right_zone"
+    region: "bottom_right"
+    x: 680
+    y: 760
+    width: 400
+    height: 320
+  # Bottom strip: hashtag.
+  - name: "bottom_center_zone"
+    region: "bottom_center"
+    x: 140
+    y: 1000
+    width: 800
+    height: 60
+text_layers:
+  # Hero title — soft warm cream pill with deep sage text, floating above
+  # the serum bottle. Pill is fully opaque (alpha FF) so it sits cleanly on
+  # top of the dropper instead of letting it ghost through; no outline/glow,
+  # just a soft drop shadow for depth.
+  - name: "title"
+    type: "badge"
+    default_font: "Roboto-Bold.ttf"
+    fallback_fonts:
+      - "OpenSans-Bold.ttf"
+      - "NotoSansCJKsc-Bold.otf"
+      - "NotoSansCJKtc-Bold.otf"
+      - "NotoSansCJKkr-Bold.otf"
+      - "NotoSansArabic-Bold.ttf"
+    max_width: 880
+    max_lines: 1
+    effects:
+      - "shadow"
+      - "backdrop"
+    anchor: "top-center"
+    x: 540
+    y: 130
+    color: "#1F3A2D"
+    font_size: 70
+    rtl_flip: true
+    backdrop_color: "#F5EDD8FF"
+    padding: 22
+
+  # Price tag — soft warm gold pill, dark sage text. The muted gold ties in
+  # with the amber serum bottle and the cream/sage palette, so the promo
+  # reads as a single accent instead of fighting the muted scene.
+  - name: "price_tag"
+    type: "badge"
+    default_font: "Roboto-Bold.ttf"
+    fallback_fonts:
+      - "OpenSans-Bold.ttf"
+      - "NotoSansCJKsc-Bold.otf"
+      - "NotoSansCJKtc-Bold.otf"
+      - "NotoSansCJKkr-Bold.otf"
+      - "NotoSansArabic-Bold.ttf"
+    max_width: 420
+    max_lines: 1
+    effects:
+      - "shadow"
+      - "backdrop"
+    anchor: "bottom-right"
+    x: 980
+    y: 950
+    color: "#1F3A2D"
+    font_size: 54
+    rtl_flip: false
+    backdrop_color: "#E8C170FF"
+    padding: 22
+
+  # Hashtag — small deep sage text, subtle shadow, lifted off the canvas
+  # edge so it does not overlap the lower eucalyptus.
+  - name: "hashtag"
+    type: "text"
+    default_font: "Roboto-Bold.ttf"
+    fallback_fonts:
+      - "OpenSans-Bold.ttf"
+      - "NotoSansCJKsc-Bold.otf"
+      - "NotoSansCJKkr-Bold.otf"
+      - "NotoSansArabic-Bold.ttf"
+    max_width: 800
+    max_lines: 1
+    effects:
+      - "shadow"
+    anchor: "bottom-center"
+    x: 540
+    y: 1000
+    color: "#1F3A2D"
+    font_size: 30
+    rtl_flip: false
+
+translations_file: "translations/en.json"
+output_format: "png"
+output_quality: 95

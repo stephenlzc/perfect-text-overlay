@@ -1,0 +1,8 @@
+{
+  "title": "Research Workflow",
+  "node1": "Data Collection",
+  "node2": "Preprocessing",
+  "node3": "Model Training",
+  "node4": "Evaluation",
+  "footer": "Figure 1. End-to-end pipeline overview"
+}

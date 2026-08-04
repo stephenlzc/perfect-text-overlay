@@ -1,0 +1,16 @@
+# Place user-defined templates here.
+# Each subdirectory should mirror the shape of `presets/<name>/`:
+#
+#   templates/
+#   └── <your-template>/
+#       ├── template.yaml        # required (TemplateConfig)
+#       └── translations/
+#           ├── en.json
+#           └── <other-lang>.json
+#
+# Run `gen_ecommerce.py validate --config templates/<your-template>/template.yaml`
+# to check the layout, then `gen_ecommerce.py batch ... --output ...` to render.
+#
+# Keep this directory in git (via the .gitkeep file) so everyone shares the
+# same starting point. Render artifacts (outputs/*.png, outputs/*.jpg) are
+# ignored at the repo root via the corresponding rules in .gitignore.
