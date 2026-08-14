@@ -18,28 +18,32 @@ import os
 import sys
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 # ``scripts/`` is intentionally not a package; support both styles of import:
 #   1) ``scripts/`` already on ``sys.path`` (the usual project layout), and
 #   2) a fresh interpreter that only knows about this file's directory.
 try:  # pragma: no cover - import path is exercised at runtime
     from config_loader import TemplateConfig, load_config
+    from font_registry import resolve_font_path
     from i18n_manager import I18nManager
     from image_analyzer import detect_existing_text
     from layout_composer import compose_layout
     from template_engine import SVGTemplateEngine
     from text_renderer import render_layers_pil, render_svg_template
+    from theme_engine import resolve_theme
 except ImportError:
     _SCRIPTS_DIR = os.path.dirname(os.path.abspath(__file__))
     if _SCRIPTS_DIR not in sys.path:
         sys.path.insert(0, _SCRIPTS_DIR)
     from config_loader import TemplateConfig, load_config  # noqa: E402
+    from font_registry import resolve_font_path  # noqa: E402
     from i18n_manager import I18nManager  # noqa: E402
     from image_analyzer import detect_existing_text  # noqa: E402
     from layout_composer import compose_layout  # noqa: E402
     from template_engine import SVGTemplateEngine  # noqa: E402
     from text_renderer import render_layers_pil, render_svg_template  # noqa: E402
+    from theme_engine import resolve_theme  # noqa: E402
 
 
 logger = logging.getLogger("batch_pipeline")
@@ -89,9 +93,12 @@ class BatchPipeline:
 
     MAX_WORKERS = 4
 
-    def __init__(self, config_path: str, renderer: str = "pil"):
+    def __init__(self, config_path: str, renderer: str = "pil", theme_name: Optional[str] = None):
         self.config_path = config_path
         self.config: TemplateConfig = load_config(config_path)
+        # Resolve every '$token' reference (template tokens, plus the built-in
+        # theme when given).  Idempotent for already-resolved configs.
+        self.config = resolve_theme(self.config, theme_name)
 
         # 渲染后端：``pil``（默认，PIL 直绘，CJK/阿拉伯语字形与 RTL 整形正确）
         # 或 ``svg``（旧路径：SVG + cairosvg 栅格化，仅作回退保留）。
@@ -279,22 +286,14 @@ class BatchPipeline:
     def _make_font_resolver(self):
         """Return a ``font_resolver(lang, layer)`` closure.
 
-        The resolver asks :class:`I18nManager` for a language-specific font
-        path; if that file is missing, it falls back to
-        ``layer.default_font`` resolved against ``assets/fonts/``.
+        Delegates to :func:`font_registry.resolve_font_path`, which keeps the
+        language/script precedence of :meth:`I18nManager.get_font_for_language`
+        and additionally honours the layer's ``font_weight``.
         """
         fonts_dir = _assets_fonts_dir()
 
         def _font_resolver(lang: str, layer) -> str:
-            lang_font_path = I18nManager.get_font_for_language(lang)
-            if lang_font_path and os.path.exists(lang_font_path):
-                return lang_font_path
-            default_path = os.path.join(fonts_dir, layer.default_font)
-            if os.path.exists(default_path):
-                return default_path
-            # Last resort: return the bare filename; the renderer will
-            # either find it via fontconfig or fall back to a default font.
-            return layer.default_font
+            return resolve_font_path(lang, layer, fonts_dir=fonts_dir)
 
         return _font_resolver
 

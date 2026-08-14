@@ -916,15 +916,24 @@ def _resolve_rgba(color_value: Any, default_alpha: int = 255) -> Tuple[int, ...]
 
 
 def _resolve_backdrop_rgba(layer, region_bright: Optional[bool]) -> Tuple[int, ...]:
-    """Resolve backdrop fill: explicit hex, or auto-dark/auto-light panel."""
+    """Resolve backdrop fill: explicit hex, or auto-dark/auto-light panel.
+
+    ``layer.backdrop_opacity`` (0–255) overrides the default alpha when set;
+    otherwise the pre-P0-2 defaults are preserved (150 for auto panels, 200 for
+    explicit hex).
+    """
     value = (layer.backdrop_color or "").strip().lower() if layer.backdrop_color else None
     if value in (None, ""):
         value = "auto-dark" if not region_bright else "auto-light"
+    opacity = getattr(layer, "backdrop_opacity", None)
     if value == "auto-dark":
-        return (0, 0, 0, 150)
+        alpha = 150 if opacity is None else max(0, min(int(opacity), 255))
+        return (0, 0, 0, alpha)
     if value == "auto-light":
-        return (255, 255, 255, 150)
-    return _resolve_rgba(value, default_alpha=200)
+        alpha = 150 if opacity is None else max(0, min(int(opacity), 255))
+        return (255, 255, 255, alpha)
+    alpha = 200 if opacity is None else max(0, min(int(opacity), 255))
+    return _resolve_rgba(value, default_alpha=alpha)
 
 
 def _fit_font_size(
@@ -970,6 +979,149 @@ def _draw_lines(
                 stroke_width=stroke_width, stroke_fill=stroke_fill,
                 anchor="la",
             )
+
+
+def _clamp_alpha(value: Optional[int], default: int) -> int:
+    return default if value is None else max(0, min(int(value), 255))
+
+
+def _render_backdrop(base, layer, left, right, y0, block_h, size) -> None:
+    """Semi-transparent rounded-rect backing (pill for ``type: badge``)."""
+    pad = getattr(layer, "padding", 0) or (
+        16 if getattr(layer, "type", "") == "badge" else max(6, size // 6)
+    )
+    box = (left - pad, y0 - pad, right + pad, y0 + block_h + pad)
+    explicit_radius = getattr(layer, "backdrop_radius", None)
+    if explicit_radius is not None:
+        radius = float(max(0, int(explicit_radius)))
+    elif getattr(layer, "type", "") == "badge":
+        radius = (block_h + 2 * pad) / 2.0  # pill：半径=高度一半
+    else:
+        radius = max(6.0, size / 6.0)
+    overlay = Image.new("RGBA", base.size, (0, 0, 0, 0))
+    ImageDraw.Draw(overlay).rounded_rectangle(
+        box, radius=radius, fill=_resolve_backdrop_rgba(layer, None)
+    )
+    base.alpha_composite(overlay)
+
+
+def _render_shadow(base, placements, layer, size) -> None:
+    """Offset shadow; ``shadow_blur > 0`` produces a soft (Gaussian) shadow."""
+    shadow_rgb = _resolve_rgba(layer.shadow_color or "#000000")[:3]
+    alpha = _clamp_alpha(getattr(layer, "shadow_opacity", None), 150)
+    shadow_rgba = (*shadow_rgb, alpha)
+
+    off = size // 18 + 1
+    dx = off if getattr(layer, "shadow_offset_x", None) is None else int(layer.shadow_offset_x)
+    dy = off if getattr(layer, "shadow_offset_y", None) is None else int(layer.shadow_offset_y)
+    blur = getattr(layer, "shadow_blur", None)
+    blur_radius = 0 if blur is None else max(0, int(blur))
+
+    overlay = Image.new("RGBA", base.size, (0, 0, 0, 0))
+    _draw_lines(
+        ImageDraw.Draw(overlay),
+        [(px + dx, py + dy, t, f, kw) for px, py, t, f, kw in placements],
+        shadow_rgba,
+    )
+    if blur_radius > 0:
+        overlay = overlay.filter(ImageFilter.GaussianBlur(radius=blur_radius))
+    base.alpha_composite(overlay)
+
+
+def _render_glow(base, placements, layer, size) -> None:
+    """Text glow: draw glyphs, blur, composite ``glow_strength`` times."""
+    glow_fill = _resolve_rgba(layer.glow_color or layer.color)
+    radius = (
+        max(2, size // 10)
+        if getattr(layer, "glow_radius", None) is None
+        else max(0, int(layer.glow_radius))
+    )
+    strength = (
+        3 if getattr(layer, "glow_strength", None) is None
+        else max(1, int(layer.glow_strength))
+    )
+    overlay = Image.new("RGBA", base.size, (0, 0, 0, 0))
+    _draw_lines(ImageDraw.Draw(overlay), placements, glow_fill)
+    blurred = overlay.filter(ImageFilter.GaussianBlur(radius=radius)) if radius > 0 else overlay
+    for _ in range(strength):
+        base.alpha_composite(blurred)
+
+
+def _gradient_image(width, height, angle, color_from, color_to):
+    """Return an RGB image filled with a linear gradient along ``angle``.
+
+    Returns ``None`` when numpy is unavailable so callers can fall back to a
+    flat fill.
+    """
+    try:
+        import numpy as np
+    except ImportError:  # pragma: no cover - numpy is a project dependency
+        return None
+    rad = math.radians(angle % 360)
+    ux, uy = math.cos(rad), math.sin(rad)
+    cx, cy = (width - 1) / 2.0, (height - 1) / 2.0
+    x = np.linspace(0, width - 1, width, dtype=np.float32)
+    y = np.linspace(0, height - 1, height, dtype=np.float32)
+    xx, yy = np.meshgrid(x, y)
+    proj = (xx - cx) * ux + (yy - cy) * uy
+    half_span = ((width - 1) * abs(ux) + (height - 1) * abs(uy)) / 2.0
+    t = np.zeros_like(proj) if half_span < 1e-6 else (proj + half_span) / (2.0 * half_span)
+    t = np.clip(t, 0.0, 1.0)
+    c_from = np.asarray(color_from, dtype=np.float32)
+    c_to = np.asarray(color_to, dtype=np.float32)
+    arr = c_from[None, None, :] + t[..., None] * (c_to - c_from)[None, None, :]
+    return Image.fromarray(np.clip(arr, 0, 255).astype(np.uint8), "RGB")
+
+
+def _render_gradient_fill(base, placements, layer) -> None:
+    """Fill glyphs with a linear gradient using a text alpha mask."""
+    color_from = _resolve_rgba(layer.gradient_from or layer.color or "#FFFFFF")[:3]
+    color_to = _resolve_rgba(layer.gradient_to or layer.color or "#FFFFFF")[:3]
+    angle = 90 if getattr(layer, "gradient_angle", None) is None else int(layer.gradient_angle)
+    w, h = base.size
+
+    mask = Image.new("L", base.size, 0)
+    _draw_lines(ImageDraw.Draw(mask), placements, 255)
+    if mask.getbbox() is None:
+        return
+
+    gradient = _gradient_image(w, h, angle, color_from, color_to)
+    if gradient is None:
+        _draw_lines(ImageDraw.Draw(base), placements, (*color_from, 255))
+        return
+
+    layer_img = Image.new("RGBA", base.size, (0, 0, 0, 0))
+    layer_img.paste(gradient, (0, 0))
+    layer_img.putalpha(mask)
+    base.alpha_composite(layer_img)
+
+
+def _render_text_body(base, placements, layer, text_rgba, effects) -> None:
+    """Draw the main text: flat fill or gradient, with optional outline."""
+    stroke_w = 0
+    stroke_fill = None
+    if "outline" in effects:
+        stroke_w = max(1, layer.stroke_width)
+        if layer.stroke_color:
+            stroke_fill = _resolve_rgba(layer.stroke_color)
+        else:
+            luminance = (0.2126 * text_rgba[0] + 0.7152 * text_rgba[1]
+                         + 0.0722 * text_rgba[2]) / 255
+            stroke_fill = (0, 0, 0, 255) if luminance > 0.5 else (255, 255, 255, 255)
+
+    if "gradient" in effects:
+        if stroke_w:
+            # Solid outline beneath the gradient fill.
+            _draw_lines(
+                ImageDraw.Draw(base), placements, (0, 0, 0, 0),
+                stroke_width=stroke_w, stroke_fill=stroke_fill,
+            )
+        _render_gradient_fill(base, placements, layer)
+    else:
+        _draw_lines(
+            ImageDraw.Draw(base), placements, text_rgba,
+            stroke_width=stroke_w, stroke_fill=stroke_fill,
+        )
 
 
 def _render_layer_pil(
@@ -1033,53 +1185,18 @@ def _render_layer_pil(
 
     # --- backdrop：半透明圆角矩形衬底（badge 默认 pill 形） ---
     if "backdrop" in effects:
-        pad = layer.padding or (16 if layer.type == "badge" else max(6, size // 6))
-        box = (left - pad, y0 - pad, right + pad, y0 + block_h + pad)
-        if layer.type == "badge":
-            radius = (block_h + 2 * pad) / 2.0  # pill：半径=高度一半
-        else:
-            radius = max(6.0, size / 6.0)
-        overlay = Image.new("RGBA", base.size, (0, 0, 0, 0))
-        ImageDraw.Draw(overlay).rounded_rectangle(
-            box, radius=radius, fill=_resolve_backdrop_rgba(layer, None)
-        )
-        base.alpha_composite(overlay)
+        _render_backdrop(base, layer, left, right, y0, block_h, size)
 
-    # --- shadow：半透明黑偏移拷贝，偏移随字号缩放 ---
+    # --- shadow：偏移拷贝；shadow_blur > 0 时为软阴影 ---
     if "shadow" in effects:
-        offset = size // 18 + 1
-        overlay = Image.new("RGBA", base.size, (0, 0, 0, 0))
-        _draw_lines(
-            ImageDraw.Draw(overlay),
-            [(px + offset, py + offset, t, f, kw) for px, py, t, f, kw in placements],
-            (0, 0, 0, 150),
-        )
-        base.alpha_composite(overlay)
+        _render_shadow(base, placements, layer, size)
 
     # --- glow：文字 -> 高斯模糊 -> 叠加多次再画主文字 ---
     if "glow" in effects:
-        glow_fill = _resolve_rgba(layer.glow_color or layer.color)
-        overlay = Image.new("RGBA", base.size, (0, 0, 0, 0))
-        _draw_lines(ImageDraw.Draw(overlay), placements, glow_fill)
-        blurred = overlay.filter(ImageFilter.GaussianBlur(radius=max(2, size // 10)))
-        for _ in range(3):
-            base.alpha_composite(blurred)
+        _render_glow(base, placements, layer, size)
 
-    # --- 主文字（outline 用 stroke 实现，描边色默认自动取对比色） ---
-    stroke_w = 0
-    stroke_fill = None
-    if "outline" in effects:
-        stroke_w = max(1, layer.stroke_width)
-        if layer.stroke_color:
-            stroke_fill = _resolve_rgba(layer.stroke_color)
-        else:
-            luminance = (0.2126 * text_rgba[0] + 0.7152 * text_rgba[1]
-                         + 0.0722 * text_rgba[2]) / 255
-            stroke_fill = (0, 0, 0, 255) if luminance > 0.5 else (255, 255, 255, 255)
-    _draw_lines(
-        draw, placements, text_rgba,
-        stroke_width=stroke_w, stroke_fill=stroke_fill,
-    )
+    # --- 主文字（flat 或 gradient 填充；outline 用 stroke 实现） ---
+    _render_text_body(base, placements, layer, text_rgba, effects)
 
 
 def _apply_layout_plan(template_config, plan: Optional[Dict[str, Any]]):

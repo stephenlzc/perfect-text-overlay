@@ -3,6 +3,25 @@ scene_type: "social"
 canvas_width: 1080
 canvas_height: 1080
 base_image_prompt: "Cozy artisan coffee shop scene, a cup of freshly brewed flat white with delicate latte art on a rustic wooden table, scattered roasted coffee beans and a small burlap sack, warm morning sunlight from the side, soft bokeh cafe background, generous empty space at the top of the frame for a title overlay, warm brown and cream tones, square format, no text, no signage, no watermark, no logos"
+
+# Design tokens (P1-5): layers reference $token placeholders; a built-in theme
+# (--theme) can override the standard names.
+theme:
+  tokens:
+    color_heading: "#FFF8E7"
+    color_heading_bg: "auto-dark"
+    color_badge_text: "#FFF8E7"
+    color_badge_bg: "#6F4E37E6"
+    color_badge_glow: "#D4A574"
+    color_accent: "#3B2F2F"
+    color_accent_bg: "#FFD166"
+    weight_heading: "bold"
+    weight_price: "bold"
+    weight_badge: "bold"
+    effect_heading: ["shadow", "backdrop"]
+    effect_price: ["shadow", "backdrop"]
+    effect_badge: ["shadow", "glow", "backdrop"]
+
 safe_zones:
   - name: "title_zone"
     region: "top_center"
@@ -37,16 +56,15 @@ text_layers:
       - "NotoSansArabic-Bold.ttf"
     max_width: 900
     max_lines: 2
-    effects:
-      - "shadow"
-      - "backdrop"
+    effects: "$effect_heading"
     anchor: "top-center"
     x: 540
     y: 180
-    color: "#FFF8E7"
+    color: "$color_heading"
     font_size: 92
+    font_weight: "$weight_heading"
     rtl_flip: false
-    backdrop_color: "auto-dark"
+    backdrop_color: "$color_heading_bg"
     padding: 20
 
   # Offer — coffee-brown pill with cream text and a warm caramel glow.
@@ -65,18 +83,16 @@ text_layers:
       - "NotoSansArabic-Bold.ttf"
     max_width: 680
     max_lines: 1
-    effects:
-      - "shadow"
-      - "glow"
-      - "backdrop"
+    effects: "$effect_badge"
     anchor: "center"
     x: 540
     y: 830
-    color: "#FFF8E7"
+    color: "$color_badge_text"
     font_size: 64
+    font_weight: "$weight_badge"
     rtl_flip: true
-    backdrop_color: "#6F4E37E6"
-    glow_color: "#D4A574"
+    backdrop_color: "$color_badge_bg"
+    glow_color: "$color_badge_glow"
     padding: 28
 
   # Price tag — bright yellow pill in the bottom-right with deep-brown text.
@@ -93,16 +109,15 @@ text_layers:
       - "NotoSansArabic-Bold.ttf"
     max_width: 320
     max_lines: 1
-    effects:
-      - "shadow"
-      - "backdrop"
+    effects: "$effect_price"
     anchor: "bottom-right"
     x: 990
     y: 1010
-    color: "#3B2F2F"
+    color: "$color_accent"
     font_size: 64
+    font_weight: "$weight_price"
     rtl_flip: false
-    backdrop_color: "#FFD166"
+    backdrop_color: "$color_accent_bg"
     padding: 20
 
 translations_file: "translations/en.json"

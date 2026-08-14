@@ -3,6 +3,22 @@ scene_type: "academic"
 canvas_width: 2400
 canvas_height: 1350
 base_image_prompt: "Clean minimalist academic presentation slide background, very light cool gray with a subtle dotted grid, four empty rounded rectangle placeholders arranged horizontally in the middle connected by thin elegant arrows flowing left to right, professional research figure style, generous empty space at top for a title and at bottom for a caption, flat design, no text, no letters, no numbers, no labels, no watermark"
+
+# Design tokens (P1-5): layers reference $token placeholders; a built-in theme
+# (--theme) can override the standard names.
+theme:
+  tokens:
+    color_heading: "#1F2A44"
+    color_badge_text: "#FFFFFF"
+    color_badge_bg: "#2B5EA7FF"
+    color_body: "#5A6478"
+    weight_heading: "bold"
+    weight_badge: "bold"
+    weight_body: "bold"
+    effect_heading: ["shadow"]
+    effect_badge: ["shadow", "backdrop"]
+    effect_body: []
+
 safe_zones:
   # 顶部：标题安全区（y 100–280）
   - name: "title_zone"
@@ -35,13 +51,13 @@ text_layers:
       - "NotoSansArabic-Bold.ttf"
     max_width: 1800
     max_lines: 1
-    effects:
-      - "shadow"
+    effects: "$effect_heading"
     anchor: "top-left"
     x: 150
     y: 180
-    color: "#1F2A44"
+    color: "$color_heading"
     font_size: 96
+    font_weight: "$weight_heading"
     rtl_flip: false
 
   # 节点 1 — 数据采集（最左方框中心）
@@ -56,15 +72,14 @@ text_layers:
       - "NotoSansArabic-Bold.ttf"
     max_width: 420
     max_lines: 1
-    effects:
-      - "shadow"
-      - "backdrop"
+    effects: "$effect_badge"
     anchor: "center"
     x: 334
     y: 667
-    color: "#FFFFFF"
+    color: "$color_badge_text"
     font_size: 52
-    backdrop_color: "#2B5EA7FF"
+    font_weight: "$weight_badge"
+    backdrop_color: "$color_badge_bg"
     padding: 24
     rtl_flip: false
 
@@ -80,15 +95,14 @@ text_layers:
       - "NotoSansArabic-Bold.ttf"
     max_width: 420
     max_lines: 1
-    effects:
-      - "shadow"
-      - "backdrop"
+    effects: "$effect_badge"
     anchor: "center"
     x: 912
     y: 729
-    color: "#FFFFFF"
+    color: "$color_badge_text"
     font_size: 52
-    backdrop_color: "#2B5EA7FF"
+    font_weight: "$weight_badge"
+    backdrop_color: "$color_badge_bg"
     padding: 24
     rtl_flip: false
 
@@ -104,15 +118,14 @@ text_layers:
       - "NotoSansArabic-Bold.ttf"
     max_width: 420
     max_lines: 1
-    effects:
-      - "shadow"
-      - "backdrop"
+    effects: "$effect_badge"
     anchor: "center"
     x: 1477
     y: 667
-    color: "#FFFFFF"
+    color: "$color_badge_text"
     font_size: 52
-    backdrop_color: "#2B5EA7FF"
+    font_weight: "$weight_badge"
+    backdrop_color: "$color_badge_bg"
     padding: 24
     rtl_flip: false
 
@@ -128,15 +141,14 @@ text_layers:
       - "NotoSansArabic-Bold.ttf"
     max_width: 420
     max_lines: 1
-    effects:
-      - "shadow"
-      - "backdrop"
+    effects: "$effect_badge"
     anchor: "center"
     x: 2063
     y: 729
-    color: "#FFFFFF"
+    color: "$color_badge_text"
     font_size: 52
-    backdrop_color: "#2B5EA7FF"
+    font_weight: "$weight_badge"
+    backdrop_color: "$color_badge_bg"
     padding: 24
     rtl_flip: false
 
@@ -152,12 +164,13 @@ text_layers:
       - "NotoSansArabic-Bold.ttf"
     max_width: 2000
     max_lines: 1
-    effects: []
+    effects: "$effect_body"
     anchor: "bottom-center"
     x: 1200
     y: 1240
-    color: "#5A6478"
+    color: "$color_body"
     font_size: 40
+    font_weight: "$weight_body"
     rtl_flip: false
 
 translations_file: "translations/en.json"

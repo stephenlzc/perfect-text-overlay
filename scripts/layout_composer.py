@@ -260,6 +260,10 @@ def _adjust_contrast(
     brightness: float,
 ) -> None:
     """文字色与有效背景（区域或 backdrop）对比不足时切换深/浅文字色。"""
+    if "gradient" in (layer_plan.get("effects") or []):
+        # 渐变文字不受扁平 ``color`` 影响；对比度兜底已由 _adjust_effects
+        # 在可读性不足时追加 backdrop 处理，这里不再交换 color。
+        return
     text_rgb = _hex_to_rgb(layer_plan["color"])
     region_rgb = tuple(
         int(v) for v in np.mean(region.reshape(-1, region.shape[-1]), axis=0)[:3]

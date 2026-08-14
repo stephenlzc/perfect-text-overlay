@@ -148,7 +148,10 @@ Turn a single text-free source image into a complete localized asset set: **1 ba
   | `medical_mechanism` | 1600×2000 | Medical mechanism diagram (3 stages) |
 
 - **Aesthetic layout engine** — analyzes base-image brightness and safe zones, then intelligently adjusts text position, contrast, and effects for readability.
-- **Rich text effects** — `shadow`, `outline`, `glow`, translucent `backdrop`, and automatic pill-shaped badges.
+- **Rich text effects** — `shadow`, `outline`, `glow`, translucent `backdrop`, and automatic pill-shaped badges. Effects are parameterised: soft shadows (`shadow_blur`), gradient text (`gradient` + `gradient_from`/`gradient_to`/`gradient_angle`), and tunable `backdrop_opacity`/`backdrop_radius`/`glow_radius`.
+- **Font weight hierarchy** — each text layer accepts `font_weight` (`light`/`regular`/`medium`/`bold`/`black`) and resolves to the matching weight of the language-appropriate typeface.
+- **Base-image prompt diversification** — `gen_ecommerce.py prompt` accepts `--style` / `--mood` / `--palette` / `--material` / `--composition` (plus `--count`, `--seed`, `--variant`, `--list`) to derive multiple varied base-image prompts from a single preset, and a preset can hand-author `base_image_prompt_variants`.
+- **Design tokens & themes** — templates centralise their look in a `theme.tokens` block and layers reference `$token` placeholders instead of hardcoding values; `gen_ecommerce.py themes` lists 7 built-in themes and `--theme <name>` on `render`/`batch` re-styles the whole template in one flag.
 - **Full RTL support** — Arabic and other right-to-left text are shaped correctly with `raqm`.
 - **Four-way concurrent batching** — renders multiple language variants in parallel for faster delivery.
 

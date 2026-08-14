@@ -14,6 +14,23 @@ base_image_prompt: |
   labels and at the top for a title, no text, no letters, no numbers,
   no labels, no watermark.
 
+# Design tokens (P1-5): layers reference $token placeholders; a built-in theme
+# (--theme) can override the standard names.
+theme:
+  tokens:
+    color_heading: "#0B3C5D"
+    color_subheading: "#4A6076"
+    color_badge_text: "#FFFFFF"
+    color_badge_bg: "#1D6FA5F2"
+    color_body: "#4A6076"
+    color_note: "#6B7E93"
+    weight_heading: "bold"
+    weight_body: "bold"
+    weight_badge: "bold"
+    effect_heading: ["shadow"]
+    effect_body: []
+    effect_badge: ["backdrop", "shadow"]
+
 safe_zones:
   - name: "title_zone"
     x: 100
@@ -42,13 +59,13 @@ text_layers:
       - "NotoSansArabic-Bold.ttf"
     max_width: 1400
     max_lines: 2
-    effects:
-      - "shadow"
+    effects: "$effect_heading"
     anchor: "top-center"
     x: 800
     y: 170
-    color: "#0B3C5D"
+    color: "$color_heading"
     font_size: 84
+    font_weight: "$weight_heading"
 
   - name: "subtitle"
     type: "text"
@@ -60,11 +77,13 @@ text_layers:
       - "NotoSansArabic-Bold.ttf"
     max_width: 1300
     max_lines: 1
+    effects: "$effect_body"
     anchor: "top-center"
     x: 800
     y: 300
-    color: "#4A6076"
+    color: "$color_subheading"
     font_size: 42
+    font_weight: "$weight_body"
 
   - name: "stage1"
     type: "badge"
@@ -76,16 +95,15 @@ text_layers:
       - "NotoSansArabic-Bold.ttf"
     max_width: 600
     max_lines: 1
-    effects:
-      - "backdrop"
-      - "shadow"
+    effects: "$effect_badge"
     anchor: "left"
     x: 110
     y: 615
-    color: "#FFFFFF"
-    backdrop_color: "#1D6FA5F2"
+    color: "$color_badge_text"
+    backdrop_color: "$color_badge_bg"
     padding: 22
     font_size: 46
+    font_weight: "$weight_badge"
 
   - name: "stage2"
     type: "badge"
@@ -97,16 +115,15 @@ text_layers:
       - "NotoSansArabic-Bold.ttf"
     max_width: 600
     max_lines: 1
-    effects:
-      - "backdrop"
-      - "shadow"
+    effects: "$effect_badge"
     anchor: "left"
     x: 110
     y: 995
-    color: "#FFFFFF"
-    backdrop_color: "#1D6FA5F2"
+    color: "$color_badge_text"
+    backdrop_color: "$color_badge_bg"
     padding: 22
     font_size: 46
+    font_weight: "$weight_badge"
 
   - name: "stage3"
     type: "badge"
@@ -118,16 +135,15 @@ text_layers:
       - "NotoSansArabic-Bold.ttf"
     max_width: 600
     max_lines: 1
-    effects:
-      - "backdrop"
-      - "shadow"
+    effects: "$effect_badge"
     anchor: "left"
     x: 110
     y: 1385
-    color: "#FFFFFF"
-    backdrop_color: "#1D6FA5F2"
+    color: "$color_badge_text"
+    backdrop_color: "$color_badge_bg"
     padding: 22
     font_size: 46
+    font_weight: "$weight_badge"
 
   - name: "stage4"
     type: "badge"
@@ -139,16 +155,15 @@ text_layers:
       - "NotoSansArabic-Bold.ttf"
     max_width: 600
     max_lines: 1
-    effects:
-      - "backdrop"
-      - "shadow"
+    effects: "$effect_badge"
     anchor: "left"
     x: 110
     y: 1760
-    color: "#FFFFFF"
-    backdrop_color: "#1D6FA5F2"
+    color: "$color_badge_text"
+    backdrop_color: "$color_badge_bg"
     padding: 22
     font_size: 46
+    font_weight: "$weight_badge"
 
   - name: "caption"
     type: "text"
@@ -160,11 +175,13 @@ text_layers:
       - "NotoSansArabic-Bold.ttf"
     max_width: 1450
     max_lines: 2
+    effects: "$effect_body"
     anchor: "bottom-center"
     x: 800
     y: 1905
-    color: "#4A6076"
+    color: "$color_body"
     font_size: 36
+    font_weight: "$weight_body"
 
   # 风险边界层：底部小字但必须可读（教学免责说明）
   - name: "note"
@@ -177,11 +194,13 @@ text_layers:
       - "NotoSansArabic-Bold.ttf"
     max_width: 1500
     max_lines: 1
+    effects: "$effect_body"
     anchor: "bottom-center"
     x: 800
     y: 1972
-    color: "#6B7E93"
+    color: "$color_note"
     font_size: 30
+    font_weight: "$weight_body"
 
 translations_file: "translations/en.json"
 output_format: "png"

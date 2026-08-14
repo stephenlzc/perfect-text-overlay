@@ -45,9 +45,10 @@ from pydantic import BaseModel, ConfigDict, Field, ValidationError, field_valida
 
 SceneType = Literal["product_main", "banner", "poster", "social", "academic", "medical"]
 LayerType = Literal["text", "badge", "price"]
-EffectType = Literal["shadow", "outline", "glow", "backdrop"]
+EffectType = Literal["shadow", "outline", "glow", "backdrop", "gradient"]
 
-_ALLOWED_EFFECTS = {"shadow", "outline", "glow", "backdrop"}
+_ALLOWED_EFFECTS = {"shadow", "outline", "glow", "backdrop", "gradient"}
+_ALLOWED_FONT_WEIGHTS = {"light", "regular", "medium", "bold", "black"}
 _ALLOWED_OUTPUT_FORMATS = {"png", "jpg", "jpeg", "webp"}
 _FONT_EXTS = {".otf", ".ttf", ".ttc"}
 _AUTO_BACKDROP_COLORS = {"auto-dark", "auto-light"}
@@ -141,6 +142,7 @@ class TextLayerConfig(BaseModel):
     y: int = Field(...)
     color: str = Field(default="#FFFFFF")
     font_size: int = Field(..., gt=0)
+    font_weight: str = Field(default="bold")
     rtl_flip: bool = Field(default=False)
     # --- PIL renderer styling knobs (optional; old YAMLs keep working) ---
     backdrop_color: Optional[str] = Field(default=None)
@@ -148,6 +150,19 @@ class TextLayerConfig(BaseModel):
     stroke_width: int = Field(default=2, ge=0, le=20)
     glow_color: Optional[str] = Field(default=None)
     padding: int = Field(default=0, ge=0)
+    # --- P0-2 effect parameterisation (optional; absent = current behaviour) ---
+    shadow_color: Optional[str] = Field(default=None)
+    shadow_offset_x: Optional[int] = Field(default=None)
+    shadow_offset_y: Optional[int] = Field(default=None)
+    shadow_blur: Optional[int] = Field(default=None, ge=0)
+    shadow_opacity: Optional[int] = Field(default=None, ge=0, le=255)
+    glow_radius: Optional[int] = Field(default=None, ge=0)
+    glow_strength: Optional[int] = Field(default=None, ge=1)
+    backdrop_opacity: Optional[int] = Field(default=None, ge=0, le=255)
+    backdrop_radius: Optional[int] = Field(default=None, ge=0)
+    gradient_from: Optional[str] = Field(default=None)
+    gradient_to: Optional[str] = Field(default=None)
+    gradient_angle: Optional[int] = Field(default=None, ge=0, le=360)
 
     @field_validator("type")
     @classmethod
@@ -156,6 +171,15 @@ class TextLayerConfig(BaseModel):
             raise ValueError(
                 f"type must be one of text/badge/price, got {value!r}"
             )
+        return value
+
+    @field_validator("effects", mode="before")
+    @classmethod
+    def _effects_allow_token_string(cls, value: Any) -> Any:
+        # A bare "$token" string is a theme reference; normalise it to a list
+        # so the rest of the pipeline keeps seeing a consistent list shape.
+        if isinstance(value, str):
+            return [value]
         return value
 
     @field_validator("effects")
@@ -168,6 +192,10 @@ class TextLayerConfig(BaseModel):
                     f"effect entries must be strings, got {type(raw).__name__}"
                 )
             eff = raw.lower().strip()
+            if eff.startswith("$"):
+                # Theme token reference; resolved by theme_engine after load.
+                cleaned.append(eff)
+                continue
             if eff not in _ALLOWED_EFFECTS:
                 raise ValueError(
                     f"effect {raw!r} not supported; allowed: {sorted(_ALLOWED_EFFECTS)}"
@@ -182,7 +210,9 @@ class TextLayerConfig(BaseModel):
             raise ValueError("color must be a string")
         return _check_hex_color(value)
 
-    @field_validator("stroke_color", "glow_color")
+    @field_validator(
+        "stroke_color", "glow_color", "shadow_color", "gradient_from", "gradient_to"
+    )
     @classmethod
     def _validate_optional_hex_color(cls, value: Optional[str]) -> Optional[str]:
         if value is None:
@@ -190,6 +220,19 @@ class TextLayerConfig(BaseModel):
         if not isinstance(value, str):
             raise ValueError("color must be a string")
         return _check_hex_color(value)
+
+    @field_validator("font_weight")
+    @classmethod
+    def _validate_font_weight(cls, value: str) -> str:
+        v = (value or "").strip().lower()
+        if v.startswith("$"):
+            # Theme token reference; resolved by theme_engine after load.
+            return v
+        if v not in _ALLOWED_FONT_WEIGHTS:
+            raise ValueError(
+                f"font_weight must be one of {sorted(_ALLOWED_FONT_WEIGHTS)}, got {value!r}"
+            )
+        return v
 
     @field_validator("backdrop_color")
     @classmethod
@@ -211,6 +254,38 @@ class TextLayerConfig(BaseModel):
         return value.strip()
 
 
+class ThemeConfig(BaseModel):
+    """Design tokens referenced by text layers via ``$name`` placeholders.
+
+    A template may ship its own token values; the CLI can additionally apply a
+    built-in named theme whose tokens override the template's.  Layer fields
+    such as ``color`` or ``effects`` can then read ``$token_name`` instead of a
+    hardcoded value, centralising the look.
+    """
+
+    model_config = ConfigDict(extra="forbid", str_strip_whitespace=True)
+
+    tokens: Dict[str, Any] = Field(default_factory=dict)
+
+    @field_validator("tokens")
+    @classmethod
+    def _validate_tokens(cls, value: Dict[str, Any]) -> Dict[str, Any]:
+        cleaned: Dict[str, Any] = {}
+        for key, raw in value.items():
+            if not isinstance(key, str) or not key.strip():
+                raise ValueError(f"theme token names must be non-blank strings, got {key!r}")
+            if isinstance(raw, str):
+                cleaned[key.strip()] = raw.strip()
+            elif isinstance(raw, (list, tuple)):
+                cleaned[key.strip()] = [str(item).strip() for item in raw]
+            else:
+                raise ValueError(
+                    f"theme token {key!r} must be a string or list of strings, "
+                    f"got {type(raw).__name__}"
+                )
+        return cleaned
+
+
 class TemplateConfig(BaseModel):
     """Top-level template configuration."""
 
@@ -221,11 +296,18 @@ class TemplateConfig(BaseModel):
     canvas_width: int = Field(..., gt=0)
     canvas_height: int = Field(..., gt=0)
     base_image_prompt: str = Field(..., min_length=1)
+    base_image_prompt_variants: List[str] = Field(default_factory=list)
+    theme: Optional[ThemeConfig] = Field(default=None)
     safe_zones: List[Dict[str, Any]] = Field(default_factory=list)
     text_layers: List[TextLayerConfig] = Field(...)
     translations_file: str = Field(..., min_length=1)
     output_format: str = Field(default="png")
     output_quality: int = Field(default=95, ge=1, le=100)
+
+    @field_validator("base_image_prompt_variants")
+    @classmethod
+    def _validate_base_image_prompt_variants(cls, value: List[str]) -> List[str]:
+        return [str(v).strip() for v in value if str(v).strip()]
 
     @field_validator("scene_type")
     @classmethod

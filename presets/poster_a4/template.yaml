@@ -3,6 +3,31 @@ scene_type: "poster"
 canvas_width: 2480
 canvas_height: 3508
 base_image_prompt: "artistic composition with clear text-safe zones at top and bottom, no embedded text, vertical 2480x3508 print-ready canvas"
+
+# Design tokens (P1-5): layers reference $token placeholders; a built-in theme
+# (--theme) can override the standard names.
+theme:
+  tokens:
+    color_heading: "#FFFFFF"
+    color_heading_glow: "#FFC83D"
+    color_heading_stroke: "#FFFFFF"
+    color_subheading: "#D8DCFF"
+    color_accent: "#FFD23F"
+    color_accent_stroke: "#FFFFFF"
+    color_accent_glow: "#FF9F1C"
+    color_badge_text: "#1B1235"
+    color_badge_bg: "#FFC83D"
+    color_badge_glow: "#FFD56B"
+    color_body: "#9AA0C7"
+    weight_heading: "bold"
+    weight_body: "bold"
+    weight_price: "bold"
+    weight_badge: "bold"
+    effect_heading: ["shadow", "glow"]
+    effect_body: ["shadow"]
+    effect_price: ["outline", "glow"]
+    effect_badge: ["backdrop", "glow", "shadow"]
+
 safe_zones:
   - name: "title_zone"
     x: 200
@@ -31,16 +56,15 @@ text_layers:
       - "NotoSansArabic-Bold.ttf"
     max_width: 2080
     max_lines: 2
-    effects:
-      - "shadow"
-      - "glow"
+    effects: "$effect_heading"
     anchor: "top-center"
     x: 1240
     y: 410
-    color: "#FFFFFF"
+    color: "$color_heading"
     font_size: 210
-    glow_color: "#FFC83D"
-    stroke_color: "#FFFFFF"
+    font_weight: "$weight_heading"
+    glow_color: "$color_heading_glow"
+    stroke_color: "$color_heading_stroke"
     stroke_width: 0
     rtl_flip: true
 
@@ -53,13 +77,13 @@ text_layers:
       - "Roboto-Bold.ttf"
     max_width: 1900
     max_lines: 2
-    effects:
-      - "shadow"
+    effects: "$effect_body"
     anchor: "top-center"
     x: 1240
     y: 1080
-    color: "#D8DCFF"
+    color: "$color_subheading"
     font_size: 78
+    font_weight: "$weight_body"
     rtl_flip: false
 
   # 价格：海报视觉焦点——超大的金色 + 白色描边 + 暖色发光
@@ -73,17 +97,16 @@ text_layers:
       - "NotoSansArabic-Bold.ttf"
     max_width: 2000
     max_lines: 1
-    effects:
-      - "outline"
-      - "glow"
+    effects: "$effect_price"
     anchor: "center"
     x: 1240
     y: 2480
-    color: "#FFD23F"
+    color: "$color_accent"
     font_size: 320
-    stroke_color: "#FFFFFF"
+    font_weight: "$weight_price"
+    stroke_color: "$color_accent_stroke"
     stroke_width: 6
-    glow_color: "#FF9F1C"
+    glow_color: "$color_accent_glow"
     rtl_flip: false
 
   # CTA 按钮：金黄胶囊衬底 + 白色字 + 暖光，按 modifier 对齐
@@ -96,17 +119,15 @@ text_layers:
       - "NotoSansArabic-Bold.ttf"
     max_width: 900
     max_lines: 1
-    effects:
-      - "backdrop"
-      - "glow"
-      - "shadow"
+    effects: "$effect_badge"
     anchor: "bottom-center"
     x: 1240
     y: 3220
-    color: "#1B1235"
-    backdrop_color: "#FFC83D"
+    color: "$color_badge_text"
+    backdrop_color: "$color_badge_bg"
     font_size: 96
-    glow_color: "#FFD56B"
+    font_weight: "$weight_badge"
+    glow_color: "$color_badge_glow"
     padding: 50
     rtl_flip: false
 
@@ -123,8 +144,9 @@ text_layers:
     anchor: "bottom-center"
     x: 1240
     y: 3430
-    color: "#9AA0C7"
+    color: "$color_body"
     font_size: 38
+    font_weight: "$weight_body"
     rtl_flip: false
 
 translations_file: "translations/en.json"

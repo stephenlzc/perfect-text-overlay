@@ -3,6 +3,23 @@ scene_type: "social"
 canvas_width: 1080
 canvas_height: 1080
 base_image_prompt: "elegant skincare product photography, amber glass serum bottle with dropper standing on a smooth wet stone with water droplets and soft green eucalyptus leaves around, spa aesthetic, gentle natural lighting with soft shadows, muted sage green and cream tones, generous negative space around the product, square format optimized for Instagram and Facebook feed, no text, no watermark, no logos, no brand labels"
+
+# Design tokens (P1-5): layers reference $token placeholders; a built-in theme
+# (--theme) can override the standard names.
+theme:
+  tokens:
+    color_heading: "#1F3A2D"
+    color_heading_bg: "#F5EDD8FF"
+    color_accent: "#1F3A2D"
+    color_accent_bg: "#E8C170FF"
+    color_body: "#1F3A2D"
+    weight_heading: "bold"
+    weight_price: "bold"
+    weight_body: "bold"
+    effect_heading: ["shadow", "backdrop"]
+    effect_price: ["shadow", "backdrop"]
+    effect_body: ["shadow"]
+
 safe_zones:
   # Top: open cream/ivory negative space — title placement.
   - name: "top_center_zone"
@@ -48,16 +65,15 @@ text_layers:
       - "NotoSansArabic-Bold.ttf"
     max_width: 880
     max_lines: 1
-    effects:
-      - "shadow"
-      - "backdrop"
+    effects: "$effect_heading"
     anchor: "top-center"
     x: 540
     y: 130
-    color: "#1F3A2D"
+    color: "$color_heading"
     font_size: 70
+    font_weight: "$weight_heading"
     rtl_flip: true
-    backdrop_color: "#F5EDD8FF"
+    backdrop_color: "$color_heading_bg"
     padding: 22
 
   # Price tag — soft warm gold pill, dark sage text. The muted gold ties in
@@ -74,16 +90,15 @@ text_layers:
       - "NotoSansArabic-Bold.ttf"
     max_width: 420
     max_lines: 1
-    effects:
-      - "shadow"
-      - "backdrop"
+    effects: "$effect_price"
     anchor: "bottom-right"
     x: 980
     y: 950
-    color: "#1F3A2D"
+    color: "$color_accent"
     font_size: 54
+    font_weight: "$weight_price"
     rtl_flip: false
-    backdrop_color: "#E8C170FF"
+    backdrop_color: "$color_accent_bg"
     padding: 22
 
   # Hashtag — small deep sage text, subtle shadow, lifted off the canvas
@@ -98,13 +113,13 @@ text_layers:
       - "NotoSansArabic-Bold.ttf"
     max_width: 800
     max_lines: 1
-    effects:
-      - "shadow"
+    effects: "$effect_body"
     anchor: "bottom-center"
     x: 540
     y: 1000
-    color: "#1F3A2D"
+    color: "$color_body"
     font_size: 30
+    font_weight: "$weight_body"
     rtl_flip: false
 
 translations_file: "translations/en.json"

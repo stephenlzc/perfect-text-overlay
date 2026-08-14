@@ -6,6 +6,25 @@ base_image_prompt: >
   Professional product photography of wireless headphones on pure white background,
   centered composition, soft studio lighting, no text, no watermark, no logos,
   clean negative space at bottom 20% for text overlay, high detail, 8k quality
+
+# Design tokens (P1-5): layers reference $token placeholders below; a built-in
+# theme (gen_ecommerce.py themes / --theme) can override the standard names.
+theme:
+  tokens:
+    color_heading: "#1a1a1a"
+    color_accent: "#e63946"
+    color_accent_bg: "#ffe8eb"
+    color_accent_stroke: "#b51d2a"
+    color_badge_text: "#FFFFFF"
+    color_badge_bg: "#1a1a1a"
+    color_badge_glow: "#ff6b6b"
+    weight_heading: "bold"
+    weight_price: "bold"
+    weight_badge: "bold"
+    effect_heading: ["shadow"]
+    effect_price: ["backdrop", "outline"]
+    effect_badge: ["backdrop", "glow"]
+
 safe_zones:
   - region: "bottom_center"
     bbox: [400, 1600, 1600, 1900]
@@ -29,12 +48,13 @@ text_layers:
       - "NotoSansArabic-Bold.ttf"
     max_width: 1500
     max_lines: 2
-    effects: ["shadow"]
+    effects: "$effect_heading"
     anchor: "bottom-center"
     x: 1000
     y: 1720
-    color: "#1a1a1a"
+    color: "$color_heading"
     font_size: 84
+    font_weight: "$weight_heading"
     rtl_flip: true
 
   # Price — bottom-right, deep red with a soft pink rounded backdrop and a
@@ -51,14 +71,15 @@ text_layers:
       - "NotoSansCJKkr-Bold.otf"
     max_width: 520
     max_lines: 1
-    effects: ["backdrop", "outline"]
+    effects: "$effect_price"
     anchor: "bottom-right"
     x: 1870
     y: 1900
-    color: "#e63946"
+    color: "$color_accent"
     font_size: 110
-    backdrop_color: "#ffe8eb"
-    stroke_color: "#b51d2a"
+    font_weight: "$weight_price"
+    backdrop_color: "$color_accent_bg"
+    stroke_color: "$color_accent_stroke"
     stroke_width: 3
     padding: 22
     rtl_flip: false
@@ -74,14 +95,15 @@ text_layers:
       - "NotoSansCJKsc-Bold.otf"
     max_width: 360
     max_lines: 1
-    effects: ["backdrop", "glow"]
+    effects: "$effect_badge"
     anchor: "top-right"
     x: 1840
     y: 180
-    color: "#FFFFFF"
+    color: "$color_badge_text"
     font_size: 54
-    backdrop_color: "#1a1a1a"
-    glow_color: "#ff6b6b"
+    font_weight: "$weight_badge"
+    backdrop_color: "$color_badge_bg"
+    glow_color: "$color_badge_glow"
     padding: 28
     rtl_flip: false
 

@@ -3,6 +3,25 @@ scene_type: "banner"
 canvas_width: 2400
 canvas_height: 1200
 base_image_prompt: "wide lifestyle hero photograph for an online store homepage banner, horizontal 2400x1200 cinematic composition, soft natural lighting, clean uncluttered background, generous empty space in the top third and bottom third of the frame reserved for headline and call-to-action overlays, warm inviting summer mood, no text, no signage, no watermarks, no logos"
+
+# Design tokens (P1-5): layers reference $token placeholders; a built-in theme
+# (--theme) can override the standard names.
+theme:
+  tokens:
+    color_heading: "#FFFFFF"
+    color_heading_bg: "#0F1A2ECC"
+    color_heading_stroke: "#000000"
+    color_subheading: "#FFFFFF"
+    color_subheading_bg: "#0F1A2ECC"
+    color_accent: "#1A1A1A"
+    color_accent_bg: "#FFC233F2"
+    weight_heading: "bold"
+    weight_body: "bold"
+    weight_price: "bold"
+    effect_heading: ["shadow", "backdrop"]
+    effect_body: ["shadow", "backdrop"]
+    effect_price: ["backdrop"]
+
 safe_zones:
   - name: "headline_zone"
     x: 60
@@ -30,18 +49,17 @@ text_layers:
       - "NotoSansCJKtc-Bold.otf"
     max_width: 1500
     max_lines: 1
-    effects:
-      - "shadow"
-      - "backdrop"
+    effects: "$effect_heading"
     anchor: "top-center"
     x: 1200
     y: 65
-    color: "#FFFFFF"
-    backdrop_color: "#0F1A2ECC"
+    color: "$color_heading"
+    backdrop_color: "$color_heading_bg"
     padding: 55
-    stroke_color: "#000000"
+    stroke_color: "$color_heading_stroke"
     stroke_width: 0
     font_size: 130
+    font_weight: "$weight_heading"
     rtl_flip: false
 
   - name: "subheadline"
@@ -54,16 +72,15 @@ text_layers:
       - "NotoSansCJKtc-Bold.otf"
     max_width: 1300
     max_lines: 1
-    effects:
-      - "shadow"
-      - "backdrop"
+    effects: "$effect_body"
     anchor: "top-left"
     x: 140
     y: 940
-    color: "#FFFFFF"
-    backdrop_color: "#0F1A2ECC"
+    color: "$color_subheading"
+    backdrop_color: "$color_subheading_bg"
     padding: 30
     font_size: 60
+    font_weight: "$weight_body"
     rtl_flip: false
 
   - name: "cta"
@@ -76,15 +93,15 @@ text_layers:
       - "NotoSansCJKtc-Bold.otf"
     max_width: 540
     max_lines: 1
-    effects:
-      - "backdrop"
+    effects: "$effect_price"
     anchor: "bottom-right"
     x: 2300
     y: 1100
-    color: "#1A1A1A"
-    backdrop_color: "#FFC233F2"
+    color: "$color_accent"
+    backdrop_color: "$color_accent_bg"
     padding: 44
     font_size: 80
+    font_weight: "$weight_price"
     rtl_flip: false
 
 translations_file: "translations/en.json"

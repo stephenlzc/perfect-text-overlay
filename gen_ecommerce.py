@@ -44,6 +44,16 @@ from config_loader import (  # noqa: E402
 )
 from i18n_manager import I18nManager  # noqa: E402
 from image_analyzer import detect_existing_text  # noqa: E402
+from prompt_variants import (  # noqa: E402
+    DIMENSIONS,
+    build_variants,
+    list_dimensions,
+)
+from theme_engine import (  # noqa: E402
+    THEMES,
+    list_themes,
+    resolve_theme,
+)
 
 
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
@@ -254,29 +264,21 @@ def init(preset: Optional[str], project_dir: str, force: bool) -> None:
 # ---------------------------------------------------------------------------
 
 
-@cli.command()
-@click.option(
-    "--config",
-    "config_path",
-    required=True,
-    type=click.Path(exists=True),
-    help="Template config YAML.",
-)
-def prompt(config_path: str) -> None:
-    """Print the base image prompt and a safe_zones summary."""
-    try:
-        cfg = load_config(config_path)
-    except ConfigError as exc:
-        click.echo(
-            click.style("ERROR", fg="red") + f": {exc}", err=True
-        )
-        sys.exit(1)
+def _print_style_lexicon() -> None:
+    """Print the style lexicon (values usable with the --style/... options)."""
+    click.echo(
+        "Style lexicon (use with --style/--mood/--palette/--material/--composition):"
+    )
+    for dim in DIMENSIONS:
+        click.echo(f"  [{dim}]")
+        for entry in list_dimensions()[dim]:
+            click.echo(f"    - {entry}")
 
-    base = (cfg.base_image_prompt or "").strip()
-    augmented, added = _ensure_safe_no_text_suffix(base)
 
+def _print_prompt_block(prompt_text: str, added: List[str]) -> None:
+    """Print one image prompt with its 'no text' suffix note."""
     click.echo("--- base image prompt (copy into Midjourney / Stable Diffusion) ---")
-    click.echo(augmented)
+    click.echo(prompt_text)
     if added:
         click.echo(
             f"(appended to enforce 'no text/watermark/logos': {', '.join(added)})"
@@ -284,6 +286,9 @@ def prompt(config_path: str) -> None:
     click.echo("---")
     click.echo("")
 
+
+def _print_safe_zones(cfg) -> None:
+    """Print the configured safe_zones summary."""
     if cfg.safe_zones:
         click.echo(f"safe_zones ({len(cfg.safe_zones)}):")
         for idx, zone in enumerate(cfg.safe_zones, 1):
@@ -306,6 +311,189 @@ def prompt(config_path: str) -> None:
             click.echo(f"  {idx}. {name}: {bb_str}{sug}")
     else:
         click.echo("(no safe_zones configured)")
+
+
+@cli.command()
+@click.option(
+    "--config",
+    "config_path",
+    required=True,
+    type=click.Path(exists=True),
+    help="Template config YAML.",
+)
+@click.option(
+    "--style",
+    default=None,
+    help="Art style descriptor (see --list) or 'random'.",
+)
+@click.option(
+    "--mood",
+    default=None,
+    help="Lighting/mood descriptor (see --list) or 'random'.",
+)
+@click.option(
+    "--palette",
+    default=None,
+    help="Color palette descriptor (see --list) or 'random'.",
+)
+@click.option(
+    "--material",
+    default=None,
+    help="Material/texture descriptor (see --list) or 'random'.",
+)
+@click.option(
+    "--composition",
+    default=None,
+    help="Composition descriptor (see --list) or 'random'.",
+)
+@click.option(
+    "--count",
+    default=1,
+    type=int,
+    help="Number of variant prompts to print (default 1).",
+)
+@click.option(
+    "--seed",
+    default=None,
+    type=int,
+    help="Seed for reproducible random variants.",
+)
+@click.option(
+    "--variant",
+    "variant_index",
+    default=None,
+    type=int,
+    help="Index into base_image_prompt_variants (0-based).",
+)
+@click.option(
+    "--list",
+    "list_styles",
+    is_flag=True,
+    default=False,
+    help="Print the style lexicon and exit.",
+)
+def prompt(
+    config_path: str,
+    style: Optional[str],
+    mood: Optional[str],
+    palette: Optional[str],
+    material: Optional[str],
+    composition: Optional[str],
+    count: int,
+    seed: Optional[int],
+    variant_index: Optional[int],
+    list_styles: bool,
+) -> None:
+    """Print the base image prompt, or diversify it with style descriptors."""
+    if list_styles:
+        _print_style_lexicon()
+        return
+
+    try:
+        cfg = load_config(config_path)
+    except ConfigError as exc:
+        click.echo(
+            click.style("ERROR", fg="red") + f": {exc}", err=True
+        )
+        sys.exit(1)
+
+    # --- hand-authored variant index (base_image_prompt_variants) ---
+    if variant_index is not None:
+        variants = cfg.base_image_prompt_variants or []
+        if not variants:
+            click.echo(
+                click.style("ERROR", fg="red")
+                + f": config {config_path!r} has no base_image_prompt_variants.",
+                err=True,
+            )
+            sys.exit(2)
+        if not 0 <= variant_index < len(variants):
+            click.echo(
+                click.style("ERROR", fg="red")
+                + f": --variant {variant_index} out of range (0..{len(variants) - 1}).",
+                err=True,
+            )
+            sys.exit(2)
+        chosen, added = _ensure_safe_no_text_suffix(variants[variant_index])
+        _print_prompt_block(chosen, added)
+        _print_safe_zones(cfg)
+        return
+
+    # --- lexicon diversification ---
+    wants_variants = (
+        any(v is not None for v in (style, mood, palette, material, composition))
+        or count > 1
+    )
+    if wants_variants:
+        base = (cfg.base_image_prompt or "").strip()
+        try:
+            prompts = build_variants(
+                base,
+                count=count,
+                seed=seed,
+                style=style,
+                mood=mood,
+                palette=palette,
+                material=material,
+                composition=composition,
+            )
+        except ValueError as exc:
+            click.echo(click.style("ERROR", fg="red") + f": {exc}", err=True)
+            sys.exit(2)
+        if not prompts:
+            click.echo(
+                click.style("ERROR", fg="red")
+                + ": could not generate distinct variants.",
+                err=True,
+            )
+            sys.exit(2)
+        click.echo(
+            "--- base image prompt variants (copy into Midjourney / Stable Diffusion) ---"
+        )
+        for i, p in enumerate(prompts, 1):
+            final, _added = _ensure_safe_no_text_suffix(p)
+            click.echo(f"[variant {i}] {final}")
+        click.echo("---")
+        click.echo("")
+        _print_safe_zones(cfg)
+        return
+
+    # --- default: current behaviour (base prompt + safe zones) ---
+    base = (cfg.base_image_prompt or "").strip()
+    augmented, added = _ensure_safe_no_text_suffix(base)
+    _print_prompt_block(augmented, added)
+    click.echo(
+        "Tip: add --style/--mood/--palette/--material/--composition, "
+        "--count N, or --variant to diversify; --list shows all descriptors."
+    )
+    click.echo("")
+    _print_safe_zones(cfg)
+
+
+# ---------------------------------------------------------------------------
+# themes
+# ---------------------------------------------------------------------------
+
+
+@cli.command()
+def themes() -> None:
+    """List built-in design themes and the tokens they override.
+
+    Pass ``--theme <name>`` to ``render``/``batch`` to re-style a template
+    whose text layers reference ``$token`` placeholders.
+    """
+    names = list_themes()
+    if not names:
+        click.echo("(no built-in themes)")
+        return
+    for name in names:
+        click.echo(f"[{name}]")
+        for key, value in THEMES[name].items():
+            if isinstance(value, (list, tuple)):
+                click.echo(f"  {key}: [{', '.join(str(v) for v in value)}]")
+            else:
+                click.echo(f"  {key}: {value}")
+        click.echo("")
 
 
 # ---------------------------------------------------------------------------
@@ -338,12 +526,22 @@ def prompt(config_path: str) -> None:
     type=click.Path(),
     help="Output image path.",
 )
+@click.option(
+    "--theme",
+    "theme_name",
+    default=None,
+    help="Built-in design theme to apply (see the 'themes' command).",
+)
 def render(
-    config_path: str, base_image: str, lang: str, output: str
+    config_path: str,
+    base_image: str,
+    lang: str,
+    output: str,
+    theme_name: Optional[str],
 ) -> None:
     """Render a single language variant via BatchPipeline.render_single."""
     BatchPipeline = _resolve_batch_pipeline()
-    pipe = BatchPipeline(config_path)
+    pipe = BatchPipeline(config_path, theme_name=theme_name)
 
     out_abs = os.path.abspath(output)
     parent = os.path.dirname(out_abs)
@@ -390,10 +588,21 @@ def render(
     type=click.Path(),
     help="Directory to write rendered variants into.",
 )
-def batch(config_path: str, base_image: str, output_dir: str) -> None:
+@click.option(
+    "--theme",
+    "theme_name",
+    default=None,
+    help="Built-in design theme to apply (see the 'themes' command).",
+)
+def batch(
+    config_path: str,
+    base_image: str,
+    output_dir: str,
+    theme_name: Optional[str],
+) -> None:
     """Render every loaded language and print a report summary."""
     BatchPipeline = _resolve_batch_pipeline()
-    pipe = BatchPipeline(config_path)
+    pipe = BatchPipeline(config_path, theme_name=theme_name)
 
     out_abs = os.path.abspath(output_dir)
     os.makedirs(out_abs, exist_ok=True)
@@ -512,6 +721,15 @@ def validate(config_path: str) -> None:
     click.echo(f"\nLoaded config: name={cfg.name!r}, scene_type={cfg.scene_type!r}")
     click.echo(f"  canvas: {cfg.canvas_width}x{cfg.canvas_height}")
     click.echo(f"  text_layers: {[layer.name for layer in cfg.text_layers]}")
+
+    # 2b) theme tokens resolve cleanly (catches typos in $token references)
+    click.echo("\n--- theme tokens ---")
+    try:
+        resolve_theme(cfg)
+        click.echo("  (theme tokens resolve OK)")
+    except ConfigError as exc:
+        click.echo(click.style("WARN", fg="yellow") + f": {exc}")
+        has_warning = True
 
     # 3) translations directory loadable by I18nManager
     config_dir = os.path.dirname(os.path.abspath(config_path))

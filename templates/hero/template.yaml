@@ -3,6 +3,25 @@ scene_type: "banner"
 canvas_width: 1600
 canvas_height: 900
 base_image_prompt: "modern wide developer-tool banner illustration with sleek wireless headphones floating over a clean deep indigo-to-teal gradient, subtle geometric grid and soft light beams, generous empty space on the left half, flat modern tech aesthetic with a soft 3D product render, no text, no letters, no watermark, no logos"
+
+# Design tokens (P1-5): layers reference $token placeholders; a built-in theme
+# (--theme) can override the standard names.
+theme:
+  tokens:
+    color_heading: "#67E8F9"
+    color_heading_stroke: "#172554"
+    color_subheading: "#F8FAFC"
+    color_subheading_stroke: "#0F172A"
+    color_badge_text: "#E0F2FE"
+    color_badge_bg: "auto-dark"
+    color_badge_stroke: "#0F172A"
+    weight_heading: "bold"
+    weight_body: "bold"
+    weight_badge: "bold"
+    effect_heading: ["shadow", "outline"]
+    effect_body: ["shadow"]
+    effect_badge: ["backdrop", "shadow"]
+
 safe_zones:
   - name: "left_text_zone"
     x: 80
@@ -20,16 +39,15 @@ text_layers:
       - "OpenSans-Bold.ttf"
     max_width: 680
     max_lines: 1
-    effects:
-      - "shadow"
-      - "outline"
+    effects: "$effect_heading"
     anchor: "top-left"
     x: 100
     y: 150
-    color: "#67E8F9"
-    stroke_color: "#172554"
+    color: "$color_heading"
+    stroke_color: "$color_heading_stroke"
     stroke_width: 2
     font_size: 110
+    font_weight: "$weight_heading"
     rtl_flip: false
 
   - name: "tagline"
@@ -42,15 +60,15 @@ text_layers:
       - "OpenSans-Bold.ttf"
     max_width: 680
     max_lines: 2
-    effects:
-      - "shadow"
+    effects: "$effect_body"
     anchor: "top-left"
     x: 100
     y: 295
-    color: "#F8FAFC"
-    stroke_color: "#0F172A"
+    color: "$color_subheading"
+    stroke_color: "$color_subheading_stroke"
     stroke_width: 1
     font_size: 44
+    font_weight: "$weight_body"
     rtl_flip: false
 
   - name: "badge"
@@ -63,18 +81,17 @@ text_layers:
       - "OpenSans-Bold.ttf"
     max_width: 590
     max_lines: 1
-    effects:
-      - "backdrop"
-      - "shadow"
+    effects: "$effect_badge"
     anchor: "top-left"
     x: 100
     y: 440
-    color: "#E0F2FE"
-    backdrop_color: "auto-dark"
+    color: "$color_badge_text"
+    backdrop_color: "$color_badge_bg"
     padding: 18
-    stroke_color: "#0F172A"
+    stroke_color: "$color_badge_stroke"
     stroke_width: 0
     font_size: 30
+    font_weight: "$weight_badge"
     rtl_flip: false
 
 translations_file: "translations/en.json"
